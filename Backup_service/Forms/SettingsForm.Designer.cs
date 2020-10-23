@@ -55,7 +55,7 @@
             this.oldPass.Location = new System.Drawing.Point(194, 31);
             this.oldPass.Name = "oldPass";
             this.oldPass.PasswordChar = '*';
-            this.oldPass.Size = new System.Drawing.Size(100, 20);
+            this.oldPass.Size = new System.Drawing.Size(100, 22);
             this.oldPass.TabIndex = 0;
             // 
             // newPass
@@ -63,7 +63,7 @@
             this.newPass.Location = new System.Drawing.Point(194, 72);
             this.newPass.Name = "newPass";
             this.newPass.PasswordChar = '*';
-            this.newPass.Size = new System.Drawing.Size(100, 20);
+            this.newPass.Size = new System.Drawing.Size(100, 22);
             this.newPass.TabIndex = 1;
             // 
             // newPass2
@@ -71,7 +71,7 @@
             this.newPass2.Location = new System.Drawing.Point(194, 117);
             this.newPass2.Name = "newPass2";
             this.newPass2.PasswordChar = '*';
-            this.newPass2.Size = new System.Drawing.Size(100, 20);
+            this.newPass2.Size = new System.Drawing.Size(100, 22);
             this.newPass2.TabIndex = 2;
             // 
             // label1
@@ -87,27 +87,27 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(109, 75);
+            this.label2.Location = new System.Drawing.Point(105, 75);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(80, 13);
+            this.label2.Size = new System.Drawing.Size(85, 13);
             this.label2.TabIndex = 4;
             this.label2.Text = "Новый пароль";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(109, 34);
+            this.label3.Location = new System.Drawing.Point(105, 34);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(84, 13);
+            this.label3.Size = new System.Drawing.Size(89, 13);
             this.label3.TabIndex = 5;
             this.label3.Text = "Старый пароль";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(62, 120);
+            this.label4.Location = new System.Drawing.Point(59, 120);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(127, 13);
+            this.label4.Size = new System.Drawing.Size(135, 13);
             this.label4.TabIndex = 6;
             this.label4.Text = "Подтверждение пароля";
             // 
@@ -135,14 +135,14 @@
             // 
             this.textBoxDomain.Location = new System.Drawing.Point(138, 233);
             this.textBoxDomain.Name = "textBoxDomain";
-            this.textBoxDomain.Size = new System.Drawing.Size(156, 20);
+            this.textBoxDomain.Size = new System.Drawing.Size(156, 22);
             this.textBoxDomain.TabIndex = 9;
             // 
             // textBoxUser
             // 
             this.textBoxUser.Location = new System.Drawing.Point(138, 269);
             this.textBoxUser.Name = "textBoxUser";
-            this.textBoxUser.Size = new System.Drawing.Size(156, 20);
+            this.textBoxUser.Size = new System.Drawing.Size(156, 22);
             this.textBoxUser.TabIndex = 10;
             // 
             // textBoxPass
@@ -150,7 +150,7 @@
             this.textBoxPass.Location = new System.Drawing.Point(138, 309);
             this.textBoxPass.Name = "textBoxPass";
             this.textBoxPass.PasswordChar = '*';
-            this.textBoxPass.Size = new System.Drawing.Size(156, 20);
+            this.textBoxPass.Size = new System.Drawing.Size(156, 22);
             this.textBoxPass.TabIndex = 11;
             // 
             // label6
@@ -158,7 +158,7 @@
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(24, 240);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(98, 13);
+            this.label6.Size = new System.Drawing.Size(105, 13);
             this.label6.TabIndex = 12;
             this.label6.Text = "Путь к хранилищу";
             // 
@@ -167,7 +167,7 @@
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(24, 276);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(103, 13);
+            this.label7.Size = new System.Drawing.Size(105, 13);
             this.label7.TabIndex = 13;
             this.label7.Text = "Имя пользователя";
             // 
@@ -176,7 +176,7 @@
             this.label8.AutoSize = true;
             this.label8.Location = new System.Drawing.Point(24, 316);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(45, 13);
+            this.label8.Size = new System.Drawing.Size(47, 13);
             this.label8.TabIndex = 14;
             this.label8.Text = "Пароль";
             // 
@@ -184,7 +184,7 @@
             // 
             this.button1.Location = new System.Drawing.Point(114, 406);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.Size = new System.Drawing.Size(80, 23);
             this.button1.TabIndex = 15;
             this.button1.Text = "Применить";
             this.button1.UseVisualStyleBackColor = true;
@@ -194,7 +194,7 @@
             // 
             this.textBoxDir.Location = new System.Drawing.Point(27, 369);
             this.textBoxDir.Name = "textBoxDir";
-            this.textBoxDir.Size = new System.Drawing.Size(222, 20);
+            this.textBoxDir.Size = new System.Drawing.Size(222, 22);
             this.textBoxDir.TabIndex = 16;
             // 
             // label9
@@ -202,7 +202,7 @@
             this.label9.AutoSize = true;
             this.label9.Location = new System.Drawing.Point(24, 353);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(228, 13);
+            this.label9.Size = new System.Drawing.Size(239, 13);
             this.label9.TabIndex = 17;
             this.label9.Text = "Выбрать директорию для выгрузки файлов";
             // 
