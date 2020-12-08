@@ -156,6 +156,7 @@ namespace Backup_service
                 button1.Invoke((MethodInvoker)(() => button1.Enabled = true));
                 button2.Invoke((MethodInvoker)(() => button2.Enabled = true));
                 button4.Invoke((MethodInvoker)(() => button4.Enabled = true));
+                forDownload.Clear();
             }));
             thread.IsBackground = true;
             thread.Start();
