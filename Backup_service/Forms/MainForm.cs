@@ -300,6 +300,7 @@ namespace Backup_service
                 try
                 {
                     ftp.UploadFile(FolderName, filePath);
+                    ListDirectory(treeView1, DOMAIN, USER, PASS);
                 }
                 catch (System.Net.WebException e)
                 {

@@ -34,7 +34,7 @@
             this.button1 = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.fileSystemWatcher1 = new System.IO.FileSystemWatcher();
-            this.treeView1 = new System.Windows.Forms.TreeView();
+            treeView1 = new System.Windows.Forms.TreeView(); 
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.label1 = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
@@ -80,10 +80,10 @@
             // 
             // treeView1
             // 
-            this.treeView1.CheckBoxes = true;
-            resources.ApplyResources(this.treeView1, "treeView1");
-            this.treeView1.Name = "treeView1";
-            this.treeView1.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterCheck);
+            treeView1.CheckBoxes = true;
+            resources.ApplyResources(treeView1, "treeView1");
+            treeView1.Name = "treeView1";
+            treeView1.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterCheck);
             // 
             // progressBar1
             // 
@@ -133,7 +133,7 @@
             this.Controls.Add(this.button2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.progressBar1);
-            this.Controls.Add(this.treeView1);
+            this.Controls.Add(treeView1);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.toolStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
@@ -154,7 +154,7 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.IO.FileSystemWatcher fileSystemWatcher1;
-        private System.Windows.Forms.TreeView treeView1;
+        static private System.Windows.Forms.TreeView treeView1;   // static для доступа из других форм
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button button2;
