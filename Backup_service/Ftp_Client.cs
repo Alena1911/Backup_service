@@ -12,6 +12,7 @@ namespace Backup_service
         //поле для хранения имени фтп-сервера
         private string _Host;
         //
+        //
         //поле для хранения логина
         private string _UserName;
 
