@@ -123,7 +123,7 @@ namespace Backup_service
             ftpRequest.Method = WebRequestMethods.Ftp.DownloadFile;
 
             ftpRequest.EnableSsl = _UseSSL;
-            //Файлы будут копироваться в кталог программы
+            //Файлы будут копироваться в каталог программы
             if (!Directory.Exists(currentfileName))
             {
                 Directory.CreateDirectory(currentfileName);

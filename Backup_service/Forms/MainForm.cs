@@ -215,8 +215,13 @@ namespace Backup_service
                 {
                     if (filepath.LastIndexOf('f') == filepath.Length - 1)
                     {
+                        
                         string filepath1 = filepath.Remove(filepath.LastIndexOf('f') - 1);
-                        string currentfilePath = TMP_DIR + filepath1.Replace('/', '\\');
+                        string currentfilePath;
+                        if (forDownload.Contains(Path.GetDirectoryName(filepath1).Replace('\\', '/') + '/'))
+                            currentfilePath = TMP_DIR + filepath1.Replace('/', '\\');
+                        else
+                            currentfilePath = TMP_DIR + '\\' + Path.GetFileName(filepath1);
                         int r = currentfilePath.LastIndexOf('\\', currentfilePath.Length - 2);
                         currentfilePath = currentfilePath.Remove(r);
 
