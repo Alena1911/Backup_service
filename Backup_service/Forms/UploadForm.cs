@@ -15,6 +15,7 @@ namespace Backup_service.Forms
         public UploadForm()
         {
             InitializeComponent();
+            comboBox1.SelectedIndex = 0;
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -36,5 +37,7 @@ namespace Backup_service.Forms
             if (textBox1.Text[0] == '/') MainForm.UploadFile(textBox1.Text+'/');
             else MainForm.UploadFile('/' + textBox1.Text + '/');
         }
+
+
     }
 }

@@ -10,7 +10,12 @@ namespace Backup_service
     {
         private IniFiles INI = new IniFiles("config.ini");// инициализация ini файла
         public List<string> forDownload = new List<string>();//список ссылок на загрузку
+        public List<string> forDownload2 = new List<string>();//список ссылок на загрузку
+        public List<string> forDownload3 = new List<string>();//список ссылок на загрузку
         public static string DOMAIN, USER, PASS, COMMONPASS, DIR;//объявление переменных, необходимых для работы с ftp сервером
+        public static string DOMAIN2, USER2, PASS2;
+        public static string DOMAIN3, USER3, PASS3;
+
         System.Threading.Thread thread = new System.Threading.Thread(delegate () { }); //создание пустого потока
 
         //принимает пароль, введённый пользователем на форме авторизации
@@ -26,15 +31,24 @@ namespace Backup_service
                     USER = EncryptDecrypt.DeShifrovka(INI.ReadINI("MainSettings", "USER"), COMMONPASS);
                     PASS = EncryptDecrypt.DeShifrovka(INI.ReadINI("MainSettings", "PASS"), COMMONPASS);
                     DIR = EncryptDecrypt.DeShifrovka(INI.ReadINI("MainSettings", "DIR"), COMMONPASS);
+                    DOMAIN2 = EncryptDecrypt.DeShifrovka(INI.ReadINI("MainSettings", "DOMAIN2"), COMMONPASS);
+                    USER2 = EncryptDecrypt.DeShifrovka(INI.ReadINI("MainSettings", "USER2"), COMMONPASS);
+                    PASS2 = EncryptDecrypt.DeShifrovka(INI.ReadINI("MainSettings", "PASS2"), COMMONPASS);
+                    DOMAIN3 = EncryptDecrypt.DeShifrovka(INI.ReadINI("MainSettings", "DOMAIN3"), COMMONPASS);
+                    USER3 = EncryptDecrypt.DeShifrovka(INI.ReadINI("MainSettings", "USER3"), COMMONPASS);
+                    PASS3 = EncryptDecrypt.DeShifrovka(INI.ReadINI("MainSettings", "PASS3"), COMMONPASS);
                 }
                 catch
                 {
                     MessageBox.Show("Ошибка извлечения файла конфигурации", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     Program.CloseAllWindows();
                 }
-
-                //FileStruct[] FileList = ftp.ListDirectory("/WpfApp1/WpfApp1");
+                //строим деревья для каждого сервера
                 ListDirectory(treeView1,DOMAIN,USER,PASS);
+                ListDirectory(treeView1, DOMAIN2, USER2, PASS2);
+                ListDirectory(treeView1, DOMAIN3, USER3, PASS3);
+
+
             }
         }
 
@@ -47,10 +61,10 @@ namespace Backup_service
             ftp.Host = Host;
             ftp.UserName = UserName;
             ftp.Password = password;
-            treeView.Nodes.Clear();
+            //treeView.Nodes.Clear();
 
             var stack = new Stack<TreeNode>();
-            var rootDirectory = DOMAIN;
+            var rootDirectory = Host;
             var node = new TreeNode(rootDirectory) { Tag = "/" };
             stack.Push(node);
 
@@ -85,7 +99,10 @@ namespace Backup_service
         //обновление дерева папок
         private void button2_Click(object sender, EventArgs e)
         {
+            treeView1.Nodes.Clear();
             ListDirectory(treeView1, DOMAIN, USER, PASS);
+            ListDirectory(treeView1, DOMAIN2, USER2, PASS2);
+            ListDirectory(treeView1, DOMAIN3, USER3, PASS3);
         }
 
         //закрытие всех форм при закрытии основной формы
@@ -113,8 +130,6 @@ namespace Backup_service
         // удаление файлов
         private void button4_Click(object sender, EventArgs e)
         {
-
-            progressBar1.Maximum = forDownload.Count;
             progressBar1.Value = 0;
 
             thread = (new System.Threading.Thread(delegate () {
@@ -124,39 +139,113 @@ namespace Backup_service
                 button2.Invoke((MethodInvoker)(() => button2.Enabled = false));
                 button4.Invoke((MethodInvoker)(() => button4.Enabled = false));
                 Ftp_Client ftp = new Ftp_Client();
-                ftp.Host = DOMAIN;
-                ftp.UserName = USER;
-                ftp.Password = PASS;
-                foreach (string p in forDownload)
+                if (forDownload.Count > 0)
                 {
-                    try
+                    progressBar1.Invoke((MethodInvoker)(() => progressBar1.Maximum = forDownload.Count));
+                    ftp.Host = DOMAIN;
+                    ftp.UserName = USER;
+                    ftp.Password = PASS;
+                    foreach (string p in forDownload)
                     {
-                        if (p.LastIndexOf('f') == p.Length - 1)
+                        try
                         {
-                            progressBar1.Invoke((MethodInvoker)(() => progressBar1.Value++));
-                            UpdateInfoLabel("Удаление " + p.Remove(p.LastIndexOf('f') - 1));
-                            ftp.DeleteFile(p.Remove(p.LastIndexOf('f') - 1));
-                        }
+                            if (p.LastIndexOf('f') == p.Length - 1)
+                            {
+                                progressBar1.Invoke((MethodInvoker)(() => progressBar1.Value++));
+                                UpdateInfoLabel("Удаление " + p.Remove(p.LastIndexOf('f') - 1));
+                                ftp.DeleteFile(p.Remove(p.LastIndexOf('f') - 1));
+                            }
 
-                        else
+                            else
+                            {
+                                progressBar1.Invoke((MethodInvoker)(() => progressBar1.Value++));
+                                UpdateInfoLabel("Удаление " + p);
+                                ftp.RemoveDirectory(p);
+                            }
+                        }
+                        catch
                         {
-                            progressBar1.Invoke((MethodInvoker)(() => progressBar1.Value++));
-                            UpdateInfoLabel("Удаление " + p);
-                            ftp.RemoveDirectory(p);
+                            continue;
                         }
                     }
-                    catch
-                    {
-                        continue;
-                    }
+                    forDownload.Clear();
+                    progressBar1.Invoke((MethodInvoker)(() => progressBar1.Value = 0));
                 }
+
+                if (forDownload2.Count > 0)
+                {
+                    progressBar1.Invoke((MethodInvoker)(() => progressBar1.Maximum = forDownload2.Count));
+                    ftp.Host = DOMAIN2;
+                    ftp.UserName = USER2;
+                    ftp.Password = PASS2;
+                    foreach (string p in forDownload2)
+                    {
+                        try
+                        {
+                            if (p.LastIndexOf('f') == p.Length - 1)
+                            {
+                                progressBar1.Invoke((MethodInvoker)(() => progressBar1.Value++));
+                                UpdateInfoLabel("Удаление " + p.Remove(p.LastIndexOf('f') - 1));
+                                ftp.DeleteFile(p.Remove(p.LastIndexOf('f') - 1));
+                            }
+
+                            else
+                            {
+                                progressBar1.Invoke((MethodInvoker)(() => progressBar1.Value++));
+                                UpdateInfoLabel("Удаление " + p);
+                                ftp.RemoveDirectory(p);
+                            }
+                        }
+                        catch
+                        {
+                            continue;
+                        }
+                    }
+                    forDownload2.Clear();
+                    progressBar1.Invoke((MethodInvoker)(() => progressBar1.Value = 0));
+                }
+
+                if (forDownload3.Count > 0)
+                {
+                    progressBar1.Invoke((MethodInvoker)(() => progressBar1.Maximum = forDownload3.Count));
+                    ftp.Host = DOMAIN3;
+                    ftp.UserName = USER3;
+                    ftp.Password = PASS3;
+                    foreach (string p in forDownload3)
+                    {
+                        try
+                        {
+                            if (p.LastIndexOf('f') == p.Length - 1)
+                            {
+                                progressBar1.Invoke((MethodInvoker)(() => progressBar1.Value++));
+                                UpdateInfoLabel("Удаление " + p.Remove(p.LastIndexOf('f') - 1));
+                                ftp.DeleteFile(p.Remove(p.LastIndexOf('f') - 1));
+                            }
+
+                            else
+                            {
+                                progressBar1.Invoke((MethodInvoker)(() => progressBar1.Value++));
+                                UpdateInfoLabel("Удаление " + p);
+                                ftp.RemoveDirectory(p);
+                            }
+                        }
+                        catch
+                        {
+                            continue;
+                        }
+                    }
+                    forDownload3.Clear();
+                    progressBar1.Invoke((MethodInvoker)(() => progressBar1.Value = 0));
+                }
+                
+                treeView1.Invoke((MethodInvoker)(() => treeView1.Nodes.Clear()));
                 BeginInvoke(new Action(() => ListDirectory(treeView1, DOMAIN, USER, PASS)));
-                progressBar1.Invoke((MethodInvoker)(() => progressBar1.Value = 0));
+                BeginInvoke(new Action(() => ListDirectory(treeView1, DOMAIN2, USER2, PASS2)));
+                BeginInvoke(new Action(() => ListDirectory(treeView1, DOMAIN3, USER3, PASS3)));
                 UpdateInfoLabel("");
                 button1.Invoke((MethodInvoker)(() => button1.Enabled = true));
                 button2.Invoke((MethodInvoker)(() => button2.Enabled = true));
                 button4.Invoke((MethodInvoker)(() => button4.Enabled = true));
-                forDownload.Clear();
             }));
             thread.IsBackground = true;
             thread.Start();
@@ -208,55 +297,163 @@ namespace Backup_service
                 button4.Invoke((MethodInvoker)(() => button4.Enabled = false));
 
                 Ftp_Client ftp = new Ftp_Client();
-                ftp.Host = DOMAIN;
-                ftp.UserName = USER;
-                ftp.Password = PASS;
-                foreach (string filepath in forDownload)
+                if (forDownload.Count > 0)
                 {
-                    if (filepath.LastIndexOf('f') == filepath.Length - 1)
+                    ftp.Host = DOMAIN;
+                    ftp.UserName = USER;
+                    ftp.Password = PASS;
+                    foreach (string filepath in forDownload)
                     {
-                        
-                        string filepath1 = filepath.Remove(filepath.LastIndexOf('f') - 1);
-                        string currentfilePath;
-                        if (forDownload.Contains(Path.GetDirectoryName(filepath1).Replace('\\', '/') + '/'))
-                            currentfilePath = TMP_DIR + filepath1.Replace('/', '\\');
-                        else
-                            currentfilePath = TMP_DIR + '\\' + Path.GetFileName(filepath1);
-                        int r = currentfilePath.LastIndexOf('\\', currentfilePath.Length - 2);
-                        currentfilePath = currentfilePath.Remove(r);
+                        if (filepath.LastIndexOf('f') == filepath.Length - 1)
+                        {
 
-                        try
+                            string filepath1 = filepath.Remove(filepath.LastIndexOf('f') - 1);
+                            string currentfilePath;
+                            if (forDownload.Contains(Path.GetDirectoryName(filepath1).Replace('\\', '/') + '/'))
+                                currentfilePath = TMP_DIR + filepath1.Replace('/', '\\');
+                            else
+                                currentfilePath = TMP_DIR + '\\' + Path.GetFileName(filepath1);
+                            int r = currentfilePath.LastIndexOf('\\', currentfilePath.Length - 2);
+                            currentfilePath = currentfilePath.Remove(r);
+
+                            try
+                            {
+                                progressBar1.Invoke((MethodInvoker)(() => progressBar1.Value++));
+                                UpdateInfoLabel(filepath1);
+
+                                ftp.DownloadFile(filepath1, currentfilePath);
+                            }
+                            catch (Exception ex)
+                            {
+                                if (ex.Message == "Поток находился в процессе прерывания.")
+                                {
+
+                                    MessageBox.Show("Процесс отменён пользователем", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    System.IO.File.Delete(currentfilePath + @"\" + filepath1.Substring(filepath1.LastIndexOf('/') + 1));
+                                    return;
+                                }
+
+                                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                continue;
+                            }
+                        }
+                        else
                         {
                             progressBar1.Invoke((MethodInvoker)(() => progressBar1.Value++));
-                            UpdateInfoLabel(filepath1);
-
-                            ftp.DownloadFile(filepath1, currentfilePath);
-                        }
-                        catch (Exception ex)
-                        {
-                            if (ex.Message == "Поток находился в процессе прерывания.")
-                            {
-                                
-                                MessageBox.Show("Процесс отменён пользователем", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                System.IO.File.Delete(currentfilePath + @"\" + filepath1.Substring(filepath1.LastIndexOf('/') + 1));
-                                return;
-                            }
-                                
-                            MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            continue;
+                            UpdateInfoLabel(filepath);
+                            if (!Directory.Exists(TMP_DIR + filepath.Replace('/', '\\')))
+                                Directory.CreateDirectory(TMP_DIR + filepath.Replace('/', '\\'));
                         }
                     }
-                    else
-                    {
-                        progressBar1.Invoke((MethodInvoker)(() => progressBar1.Value++));
-                        UpdateInfoLabel(filepath);
-                        if (!Directory.Exists(TMP_DIR+ filepath.Replace('/', '\\')))
-                            Directory.CreateDirectory(TMP_DIR + filepath.Replace('/', '\\'));
-                    }
+                    UpdateInfoLabel("");
+                    progressBar1.Invoke((MethodInvoker)(() => progressBar1.Value = 0));
                 }
-                UpdateInfoLabel("");
+
+                if (forDownload2.Count > 0)
+                {
+                    ftp.Host = DOMAIN2;
+                    ftp.UserName = USER2;
+                    ftp.Password = PASS2;
+                    foreach (string filepath in forDownload2)
+                    {
+                        if (filepath.LastIndexOf('f') == filepath.Length - 1)
+                        {
+
+                            string filepath1 = filepath.Remove(filepath.LastIndexOf('f') - 1);
+                            string currentfilePath;
+                            if (forDownload2.Contains(Path.GetDirectoryName(filepath1).Replace('\\', '/') + '/'))
+                                currentfilePath = TMP_DIR + filepath1.Replace('/', '\\');
+                            else
+                                currentfilePath = TMP_DIR + '\\' + Path.GetFileName(filepath1);
+                            int r = currentfilePath.LastIndexOf('\\', currentfilePath.Length - 2);
+                            currentfilePath = currentfilePath.Remove(r);
+
+                            try
+                            {
+                                progressBar1.Invoke((MethodInvoker)(() => progressBar1.Value++));
+                                UpdateInfoLabel(filepath1);
+
+                                ftp.DownloadFile(filepath1, currentfilePath);
+                            }
+                            catch (Exception ex)
+                            {
+                                if (ex.Message == "Поток находился в процессе прерывания.")
+                                {
+
+                                    MessageBox.Show("Процесс отменён пользователем", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    System.IO.File.Delete(currentfilePath + @"\" + filepath1.Substring(filepath1.LastIndexOf('/') + 1));
+                                    return;
+                                }
+
+                                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                continue;
+                            }
+                        }
+                        else
+                        {
+                            progressBar1.Invoke((MethodInvoker)(() => progressBar1.Value++));
+                            UpdateInfoLabel(filepath);
+                            if (!Directory.Exists(TMP_DIR + filepath.Replace('/', '\\')))
+                                Directory.CreateDirectory(TMP_DIR + filepath.Replace('/', '\\'));
+                        }
+                    }
+                    UpdateInfoLabel("");
+                    progressBar1.Invoke((MethodInvoker)(() => progressBar1.Value = 0));
+                }
+
+                if (forDownload3.Count > 0)
+                {
+                    ftp.Host = DOMAIN3;
+                    ftp.UserName = USER3;
+                    ftp.Password = PASS3;
+                    foreach (string filepath in forDownload3)
+                    {
+                        if (filepath.LastIndexOf('f') == filepath.Length - 1)
+                        {
+
+                            string filepath1 = filepath.Remove(filepath.LastIndexOf('f') - 1);
+                            string currentfilePath;
+                            if (forDownload3.Contains(Path.GetDirectoryName(filepath1).Replace('\\', '/') + '/'))
+                                currentfilePath = TMP_DIR + filepath1.Replace('/', '\\');
+                            else
+                                currentfilePath = TMP_DIR + '\\' + Path.GetFileName(filepath1);
+                            int r = currentfilePath.LastIndexOf('\\', currentfilePath.Length - 2);
+                            currentfilePath = currentfilePath.Remove(r);
+
+                            try
+                            {
+                                progressBar1.Invoke((MethodInvoker)(() => progressBar1.Value++));
+                                UpdateInfoLabel(filepath1);
+
+                                ftp.DownloadFile(filepath1, currentfilePath);
+                            }
+                            catch (Exception ex)
+                            {
+                                if (ex.Message == "Поток находился в процессе прерывания.")
+                                {
+
+                                    MessageBox.Show("Процесс отменён пользователем", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    System.IO.File.Delete(currentfilePath + @"\" + filepath1.Substring(filepath1.LastIndexOf('/') + 1));
+                                    return;
+                                }
+
+                                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                continue;
+                            }
+                        }
+                        else
+                        {
+                            progressBar1.Invoke((MethodInvoker)(() => progressBar1.Value++));
+                            UpdateInfoLabel(filepath);
+                            if (!Directory.Exists(TMP_DIR + filepath.Replace('/', '\\')))
+                                Directory.CreateDirectory(TMP_DIR + filepath.Replace('/', '\\'));
+                        }
+                    }
+                    UpdateInfoLabel("");
+                    progressBar1.Invoke((MethodInvoker)(() => progressBar1.Value = 0));
+                }
+
                 MessageBox.Show("Файлы скопированы", "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                progressBar1.Invoke((MethodInvoker)(() => progressBar1.Value=0));
                 button1.Invoke((MethodInvoker)(() => button1.Enabled = true));
                 button2.Invoke((MethodInvoker)(() => button2.Enabled = true));
                 button4.Invoke((MethodInvoker)(() => button4.Enabled = true));
@@ -266,28 +463,76 @@ namespace Backup_service
             thread.Start();
         }
 
-        //добавление в лист forDownload путей файлов и папок, отмеченных в дереве
+        //добавление в лист forDownload, forDownload1, forDownload2 путей файлов и папок, отмеченных в дереве
         private void treeView1_AfterCheck(object sender, TreeViewEventArgs e)
         {
-            if (e.Node.Checked)
+            if (e.Node.FullPath.Substring(0, e.Node.FullPath.IndexOf('\\')) == DOMAIN)
             {
-                forDownload.Add((string)e.Node.Tag);
-                if (e.Node.Nodes.Count > 0)
+                if (e.Node.Checked)
                 {
+                    forDownload.Add((string)e.Node.Tag);
+                    if (e.Node.Nodes.Count > 0)
+                    {
+                        foreach (TreeNode c in e.Node.Nodes)
+                        {
+                            c.Checked = true;
+                        }
+                    }
+                }
+                else
+                {
+                    forDownload.Remove((string)e.Node.Tag);
                     foreach (TreeNode c in e.Node.Nodes)
                     {
-                        c.Checked = true;
+                        c.Checked = false;
                     }
                 }
             }
-            else
+             else if (e.Node.FullPath.Substring(0, e.Node.FullPath.IndexOf('\\')) == DOMAIN2)
             {
-                forDownload.Remove((string)e.Node.Tag);
-                foreach (TreeNode c in e.Node.Nodes)
+                if (e.Node.Checked)
                 {
-                    c.Checked = false;
+                    forDownload2.Add((string)e.Node.Tag);
+                    if (e.Node.Nodes.Count > 0)
+                    {
+                        foreach (TreeNode c in e.Node.Nodes)
+                        {
+                            c.Checked = true;
+                        }
+                    }
+                }
+                else
+                {
+                    forDownload2.Remove((string)e.Node.Tag);
+                    foreach (TreeNode c in e.Node.Nodes)
+                    {
+                        c.Checked = false;
+                    }
                 }
             }
+            else if (e.Node.FullPath.Substring(0, e.Node.FullPath.IndexOf('\\')) == DOMAIN3)
+            {
+                if (e.Node.Checked)
+                {
+                    forDownload3.Add((string)e.Node.Tag);
+                    if (e.Node.Nodes.Count > 0)
+                    {
+                        foreach (TreeNode c in e.Node.Nodes)
+                        {
+                            c.Checked = true;
+                        }
+                    }
+                }
+                else
+                {
+                    forDownload3.Remove((string)e.Node.Tag);
+                    foreach (TreeNode c in e.Node.Nodes)
+                    {
+                        c.Checked = false;
+                    }
+                }
+            }
+
         }
 
         public static void UploadFile(string FolderName = "/")
