@@ -20,7 +20,18 @@ namespace Backup_service.Forms
 
         private void button2_Click(object sender, EventArgs e)
         {
-            MainForm.UploadFile();
+            if (comboBox1.SelectedIndex == 0)
+            {
+                MainForm.UploadFile(MainForm.DOMAIN, MainForm.USER, MainForm.PASS);
+            }
+            if (comboBox1.SelectedIndex == 1)
+            {
+                MainForm.UploadFile(MainForm.DOMAIN2, MainForm.USER2, MainForm.PASS2);
+            }
+            if (comboBox1.SelectedIndex == 2)
+            {
+                MainForm.UploadFile(MainForm.DOMAIN3, MainForm.USER3, MainForm.PASS3);
+            }
             Close();
         }
 
@@ -33,9 +44,27 @@ namespace Backup_service.Forms
 
         private void button3_Click(object sender, EventArgs e)
         {
-            if (textBox1.Text == "") MainForm.UploadFile();
-            if (textBox1.Text[0] == '/') MainForm.UploadFile(textBox1.Text+'/');
-            else MainForm.UploadFile('/' + textBox1.Text + '/');
+            if (comboBox1.SelectedIndex == 0)
+            {
+                if (textBox1.Text == "") 
+                    MainForm.UploadFile(MainForm.DOMAIN, MainForm.USER, MainForm.PASS);
+                if (textBox1.Text[0] == '/') MainForm.UploadFile(MainForm.DOMAIN, MainForm.USER, MainForm.PASS, textBox1.Text + '/');
+                else MainForm.UploadFile(MainForm.DOMAIN, MainForm.USER, MainForm.PASS, '/' + textBox1.Text + '/');
+            }
+            if (comboBox1.SelectedIndex == 1)
+            {
+                if (textBox1.Text == "") 
+                    MainForm.UploadFile(MainForm.DOMAIN2, MainForm.USER2, MainForm.PASS2);
+                if (textBox1.Text[0] == '/') MainForm.UploadFile(MainForm.DOMAIN2, MainForm.USER2, MainForm.PASS2, textBox1.Text + '/');
+                else MainForm.UploadFile(MainForm.DOMAIN2, MainForm.USER2, MainForm.PASS2, '/' + textBox1.Text + '/');
+            }
+            if (comboBox1.SelectedIndex == 2)
+            {
+                if (textBox1.Text == "") 
+                    MainForm.UploadFile(MainForm.DOMAIN3, MainForm.USER3, MainForm.PASS3);
+                if (textBox1.Text[0] == '/') MainForm.UploadFile(MainForm.DOMAIN3, MainForm.USER3, MainForm.PASS3, textBox1.Text + '/');
+                else MainForm.UploadFile(MainForm.DOMAIN3, MainForm.USER3, MainForm.PASS3, '/' + textBox1.Text + '/');
+            }
         }
 
 

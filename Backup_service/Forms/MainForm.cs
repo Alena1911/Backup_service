@@ -96,13 +96,18 @@ namespace Backup_service
         }
 
         
-        //обновление дерева папок
-        private void button2_Click(object sender, EventArgs e)
+        private static void updateList()
         {
             treeView1.Nodes.Clear();
             ListDirectory(treeView1, DOMAIN, USER, PASS);
             ListDirectory(treeView1, DOMAIN2, USER2, PASS2);
             ListDirectory(treeView1, DOMAIN3, USER3, PASS3);
+        }
+
+        //обновление дерева папок
+        private void button2_Click(object sender, EventArgs e)
+        {
+            updateList();
         }
 
         //закрытие всех форм при закрытии основной формы
@@ -239,9 +244,7 @@ namespace Backup_service
                 }
                 
                 treeView1.Invoke((MethodInvoker)(() => treeView1.Nodes.Clear()));
-                BeginInvoke(new Action(() => ListDirectory(treeView1, DOMAIN, USER, PASS)));
-                BeginInvoke(new Action(() => ListDirectory(treeView1, DOMAIN2, USER2, PASS2)));
-                BeginInvoke(new Action(() => ListDirectory(treeView1, DOMAIN3, USER3, PASS3)));
+                BeginInvoke(new Action(() => updateList()));
                 UpdateInfoLabel("");
                 button1.Invoke((MethodInvoker)(() => button1.Enabled = true));
                 button2.Invoke((MethodInvoker)(() => button2.Enabled = true));
@@ -535,7 +538,7 @@ namespace Backup_service
 
         }
 
-        public static void UploadFile(string FolderName = "/")
+        public static void UploadFile(string domain, string user, string pass, string FolderName = "/")
         {
             var filePath = string.Empty;
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -544,19 +547,26 @@ namespace Backup_service
                 //получаем путь к файлу
                 filePath = openFileDialog.FileName;
                 Ftp_Client ftp = new Ftp_Client();
-                ftp.Host = DOMAIN;
-                ftp.UserName = USER;
-                ftp.Password = PASS;
+                ftp.Host = domain;
+                ftp.UserName = user;
+                ftp.Password = pass;
                 try
                 {
                     ftp.UploadFile(FolderName, filePath);
-                    ListDirectory(treeView1, DOMAIN, USER, PASS);
+                    updateList();
                 }
                 catch (System.Net.WebException e)
                 {
-                    FolderName = FolderName.Replace("/","");
-                    ftp.CreateDirectory("/", FolderName);
-                    ftp.UploadFile('/'+FolderName+'/', filePath);
+                    try
+                    {
+                        FolderName = FolderName.Replace("/", "");
+                        ftp.CreateDirectory("/", FolderName);
+                        ftp.UploadFile('/' + FolderName + '/', filePath);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
                 }
                 
             }
