@@ -17,10 +17,22 @@ namespace Backup_service
         {
             if (INI.ReadINI("MainSettings", "P") == "")
             {
-                MessageBox.Show("Файл настроек повреждён!", "Ошибка", MessageBoxButtons.OK);
-                Program.CloseAllWindows();
+                INI.Write("MainSettings", "P", EncryptDecrypt.Shifrovka("", ""));
+                INI.Write("MainSettings", "DOMAIN", "");
+                INI.Write("MainSettings", "USER", "");
+                INI.Write("MainSettings", "PASS", "");
+                INI.Write("MainSettings", "DOMAIN2", "");
+                INI.Write("MainSettings", "USER2", "");
+                INI.Write("MainSettings", "PASS2", "");
+                INI.Write("MainSettings", "DOMAIN3", "");
+                INI.Write("MainSettings", "USER3", "");
+                INI.Write("MainSettings", "PASS3", "");
+                MessageBox.Show("Файл настроек создан. Установите пароль в окне настроек");
+                Form ifrm = new MainForm("");
+                ifrm.Show();
+                this.Hide();
             }
-            if (EncryptDecrypt.GetHashString(PasswordText.Text + "Шифр") == INI.ReadINI("MainSettings", "P"))
+            else if (EncryptDecrypt.GetHashString(PasswordText.Text + "Шифр") == INI.ReadINI("MainSettings", "P"))
             {
                 label2.Text = "Подключение к файловому хранилищу...";
                 label2.Refresh();

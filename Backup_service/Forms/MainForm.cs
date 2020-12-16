@@ -8,16 +8,17 @@ namespace Backup_service
 {
     public partial class MainForm : Form
     {
+        
         private IniFiles INI = new IniFiles("config.ini");// инициализация ini файла
         public List<string> forDownload = new List<string>();//список ссылок на загрузку
         public List<string> forDownload2 = new List<string>();//список ссылок на загрузку
         public List<string> forDownload3 = new List<string>();//список ссылок на загрузку
-        public static string DOMAIN, USER, PASS, COMMONPASS, DIR;//объявление переменных, необходимых для работы с ftp сервером
-        public static string DOMAIN2, USER2, PASS2;
-        public static string DOMAIN3, USER3, PASS3;
+        public static string DOMAIN="", USER="", PASS="", COMMONPASS="", DIR="";//объявление переменных, необходимых для работы с ftp сервером
+        public static string DOMAIN2="", USER2="", PASS2="";
+        public static string DOMAIN3="", USER3="", PASS3="";
 
-        System.Threading.Thread thread = new System.Threading.Thread(delegate () { }); //создание пустого потока
-
+        static System.Threading.Thread thread = new System.Threading.Thread(delegate () { }); //создание пустого потока
+        
         //принимает пароль, введённый пользователем на форме авторизации
         public MainForm(string pass = "")
         {
@@ -38,15 +39,18 @@ namespace Backup_service
                     USER3 = EncryptDecrypt.DeShifrovka(INI.ReadINI("MainSettings", "USER3"), COMMONPASS);
                     PASS3 = EncryptDecrypt.DeShifrovka(INI.ReadINI("MainSettings", "PASS3"), COMMONPASS);
                 }
-                catch
+                catch (Exception ex)
                 {
                     MessageBox.Show("Ошибка извлечения файла конфигурации", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     Program.CloseAllWindows();
                 }
                 //строим деревья для каждого сервера
-                ListDirectory(treeView1,DOMAIN,USER,PASS);
-                ListDirectory(treeView1, DOMAIN2, USER2, PASS2);
-                ListDirectory(treeView1, DOMAIN3, USER3, PASS3);
+                if (DOMAIN!="" && USER!=""&& PASS != "")
+                    ListDirectory(treeView1,DOMAIN,USER,PASS);
+                if (DOMAIN2 != "" && USER2 != "" && PASS2 != "")
+                    ListDirectory(treeView1, DOMAIN2, USER2, PASS2);
+                if (DOMAIN3 != "" && USER3 != "" && PASS3 != "")
+                    ListDirectory(treeView1, DOMAIN3, USER3, PASS3);
 
 
             }
@@ -95,13 +99,57 @@ namespace Backup_service
             treeView.Nodes.Add(node);
         }
 
-        
-        private static void updateList()
+
+        //Построение дерева файловой системы ftp сервера из другого потока
+        public static void ListDirectoryFromInvoke(TreeView treeView, string Host, string UserName, string password)
         {
-            treeView1.Nodes.Clear();
-            ListDirectory(treeView1, DOMAIN, USER, PASS);
-            ListDirectory(treeView1, DOMAIN2, USER2, PASS2);
-            ListDirectory(treeView1, DOMAIN3, USER3, PASS3);
+            Ftp_Client ftp = new Ftp_Client();
+            ftp.Host = Host;
+            ftp.UserName = UserName;
+            ftp.Password = password;
+            //treeView.Nodes.Clear();
+
+            var stack = new Stack<TreeNode>();
+            var rootDirectory = Host;
+            var node = new TreeNode(rootDirectory) { Tag = "/" };
+            stack.Push(node);
+
+            while (stack.Count > 0)
+            {
+                try
+                {
+                    var currentNode = stack.Pop();
+                    var directoryInfo = ftp.ListDirectory((string)currentNode.Tag);
+                    foreach (var directory in directoryInfo)
+                    {
+                        if (directory.IsDirectory && directory.Name != "?" && !directory.Name.Contains("????"))
+                        {
+                            var childDirectoryNode = new TreeNode(directory.Name) { Tag = currentNode.Tag + directory.Name + '/' };
+                            currentNode.Nodes.Add(childDirectoryNode);
+                            stack.Push(childDirectoryNode);
+                        }
+                    }
+                    foreach (var file in directoryInfo)
+                        if (!file.IsDirectory && file.Name != "?" && !file.Name.Contains("????"))
+                            currentNode.Nodes.Add(new TreeNode(file.Name) { Tag = currentNode.Tag + file.Name + "/f" }); ; //пометка f в конце пути означает, что это файл!
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+            treeView1.Invoke((MethodInvoker)(() => treeView.Nodes.Add(node)));
+        }
+
+        public static void updateList()
+        {
+            treeView1.Invoke((MethodInvoker)(() => treeView1.Nodes.Clear()));
+            if (DOMAIN != "" && USER != "" && PASS != "")
+                ListDirectoryFromInvoke(treeView1, DOMAIN, USER, PASS);
+            if (DOMAIN2 != "" && USER2 != "" && PASS2 != "")
+                ListDirectoryFromInvoke(treeView1, DOMAIN2, USER2, PASS2);
+            if (DOMAIN3 != "" && USER3 != "" && PASS3 != "")
+                ListDirectoryFromInvoke(treeView1, DOMAIN3, USER3, PASS3);
         }
 
         //обновление дерева папок
@@ -138,11 +186,12 @@ namespace Backup_service
             progressBar1.Value = 0;
 
             thread = (new System.Threading.Thread(delegate () {
-                if (forDownload.Count < 1) return;
+                if (forDownload.Count < 1 && forDownload2.Count < 1 && forDownload3.Count < 1) return;
                 //отключаем кнопки
                 button1.Invoke((MethodInvoker)(() => button1.Enabled = false));
                 button2.Invoke((MethodInvoker)(() => button2.Enabled = false));
                 button4.Invoke((MethodInvoker)(() => button4.Enabled = false));
+                button5.Invoke((MethodInvoker)(() => button5.Enabled = false));
                 Ftp_Client ftp = new Ftp_Client();
                 if (forDownload.Count > 0)
                 {
@@ -249,6 +298,7 @@ namespace Backup_service
                 button1.Invoke((MethodInvoker)(() => button1.Enabled = true));
                 button2.Invoke((MethodInvoker)(() => button2.Enabled = true));
                 button4.Invoke((MethodInvoker)(() => button4.Enabled = true));
+                button5.Invoke((MethodInvoker)(() => button5.Enabled = true));
             }));
             thread.IsBackground = true;
             thread.Start();
@@ -269,7 +319,7 @@ namespace Backup_service
         }
 
         //обновление информационной строки из другого потока
-        private void UpdateInfoLabel(string text)
+        private static void UpdateInfoLabel(string text)
         {
             if (label1.InvokeRequired) //Если обратились к контролу не из того потока, в котором конрол был создан, то...
                 label1.Invoke((Action<string>)UpdateInfoLabel, text); //Вызываем этот же метод через Invoke
@@ -289,15 +339,16 @@ namespace Backup_service
             }
             else
                 return;
-            progressBar1.Maximum = forDownload.Count;
+            progressBar1.Maximum = forDownload.Count+ forDownload2.Count + forDownload3.Count;
             progressBar1.Value = 0;
             //создаём поток
             thread = (new System.Threading.Thread(delegate () {
-                if (forDownload.Count < 1) return;
+                if (forDownload.Count < 1 && forDownload2.Count < 1 && forDownload3.Count < 1) return;
                 //отключаем кнопки
                 button1.Invoke((MethodInvoker)(() => button1.Enabled = false));
                 button2.Invoke((MethodInvoker)(() => button2.Enabled = false));
                 button4.Invoke((MethodInvoker)(() => button4.Enabled = false));
+                button5.Invoke((MethodInvoker)(() => button5.Enabled = false));
 
                 Ftp_Client ftp = new Ftp_Client();
                 if (forDownload.Count > 0)
@@ -349,7 +400,6 @@ namespace Backup_service
                         }
                     }
                     UpdateInfoLabel("");
-                    progressBar1.Invoke((MethodInvoker)(() => progressBar1.Value = 0));
                 }
 
                 if (forDownload2.Count > 0)
@@ -401,7 +451,6 @@ namespace Backup_service
                         }
                     }
                     UpdateInfoLabel("");
-                    progressBar1.Invoke((MethodInvoker)(() => progressBar1.Value = 0));
                 }
 
                 if (forDownload3.Count > 0)
@@ -453,14 +502,14 @@ namespace Backup_service
                         }
                     }
                     UpdateInfoLabel("");
-                    progressBar1.Invoke((MethodInvoker)(() => progressBar1.Value = 0));
-                }
 
+                }
+                progressBar1.Invoke((MethodInvoker)(() => progressBar1.Value = 0));
                 MessageBox.Show("Файлы скопированы", "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 button1.Invoke((MethodInvoker)(() => button1.Enabled = true));
                 button2.Invoke((MethodInvoker)(() => button2.Enabled = true));
                 button4.Invoke((MethodInvoker)(() => button4.Enabled = true));
-
+                button5.Invoke((MethodInvoker)(() => button5.Enabled = true));
             }));
             thread.IsBackground = true;
             thread.Start();
@@ -538,14 +587,16 @@ namespace Backup_service
 
         }
 
-        public static void UploadFile(string domain, string user, string pass, string FolderName = "/")
+        public static void UploadFile(string domain, string user, string pass, string filePath, string FolderName = "/")
         {
-            var filePath = string.Empty;
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                //получаем путь к файлу
-                filePath = openFileDialog.FileName;
+            thread = (new System.Threading.Thread(delegate () {
+                //отключаем кнопки
+                button1.Invoke((MethodInvoker)(() => button1.Enabled = false));
+                button2.Invoke((MethodInvoker)(() => button2.Enabled = false));
+                button4.Invoke((MethodInvoker)(() => button4.Enabled = false));
+                button5.Invoke((MethodInvoker)(() => button5.Enabled = false));
+                progressBar1.Invoke((MethodInvoker)(() => progressBar1.Value=progressBar1.Maximum));
+                UpdateInfoLabel(System.IO.Path.GetFileName(filePath));
                 Ftp_Client ftp = new Ftp_Client();
                 ftp.Host = domain;
                 ftp.UserName = user;
@@ -559,9 +610,14 @@ namespace Backup_service
                 {
                     try
                     {
-                        FolderName = FolderName.Replace("/", "");
-                        ftp.CreateDirectory("/", FolderName);
-                        ftp.UploadFile('/' + FolderName + '/', filePath);
+                        if (FolderName == "/")
+                            MessageBox.Show(e.Message, "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        else
+                        {
+                            FolderName = FolderName.Replace("/", "");
+                            ftp.CreateDirectory("/", FolderName);
+                            ftp.UploadFile('/' + FolderName + '/', filePath);
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -569,7 +625,17 @@ namespace Backup_service
                     }
                 }
                 
-            }
+                button1.Invoke((MethodInvoker)(() => button1.Enabled = true));
+                button2.Invoke((MethodInvoker)(() => button2.Enabled = true));
+                button4.Invoke((MethodInvoker)(() => button4.Enabled = true));
+                button5.Invoke((MethodInvoker)(() => button5.Enabled = true));
+                progressBar1.Invoke((MethodInvoker)(() => progressBar1.Value = 0));
+                UpdateInfoLabel("");
+
+            }));
+            thread.IsBackground = true;
+            thread.Start();
+            
         }
     }
 }

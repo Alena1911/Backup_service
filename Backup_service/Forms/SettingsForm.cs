@@ -8,7 +8,7 @@ namespace Backup_service.Forms
         IniFiles INI = new IniFiles("config.ini");
         public static string tmpDOMAIN = MainForm.DOMAIN, tmpUSER = MainForm.USER, tmpPASS = MainForm.PASS;//объявление переменных, необходимых для работы с ftp сервером
         public static string tmpDOMAIN2 = MainForm.DOMAIN2, tmpUSER2 = MainForm.USER2, tmpPASS2 = MainForm.PASS2;
-        public static string tmpDOMAIN3 = MainForm.PASS3, tmpUSER3 = MainForm.PASS3, tmpPASS3 = MainForm.PASS3;
+        public static string tmpDOMAIN3 = MainForm.USER3, tmpUSER3 = MainForm.USER3, tmpPASS3 = MainForm.PASS3;
 
         private void comboBox1_Click(object sender, EventArgs e)
         {
@@ -44,9 +44,17 @@ namespace Backup_service.Forms
 
         private void changePassBtn_Click(object sender, EventArgs e)
         {
-            if (INI.ReadINI("MainSettings", "P") == "")
+            if (INI.ReadINI("MainSettings", "P") == "" && MainForm.DOMAIN == "" && MainForm.DOMAIN2 == "" && MainForm.DOMAIN3 == "" && newPass.Text == newPass2.Text)
+            {
+                INI.Write("MainSettings", "P", EncryptDecrypt.GetHashString(newPass.Text + "Шифр"));
+            }
+            else if (INI.ReadINI("MainSettings", "P") == "")
             {
                 MessageBox.Show("Файл настроек повреждён!", "Ошибка", MessageBoxButtons.OK);
+            }
+            else if (newPass.Text != newPass2.Text)
+            {
+                MessageBox.Show("Пароли не совпадают", "Ошибка", MessageBoxButtons.OK);
             }
             else if (EncryptDecrypt.GetHashString(oldPass.Text + "Шифр") == INI.ReadINI("MainSettings","P") && newPass.Text==newPass2.Text)
             {
@@ -65,10 +73,6 @@ namespace Backup_service.Forms
             else if(EncryptDecrypt.GetHashString(oldPass.Text + "Шифр") != INI.ReadINI("MainSettings", "P"))
             {
                 MessageBox.Show("Неверно введён старый пароль", "Ошибка", MessageBoxButtons.OK);
-            }
-            else if (newPass.Text != newPass2.Text)
-            {
-                MessageBox.Show("Пароли не совпадают", "Ошибка", MessageBoxButtons.OK);
             }
         }
 
@@ -143,7 +147,7 @@ namespace Backup_service.Forms
                 INI.Write("MainSettings", "DIR", EncryptDecrypt.Shifrovka(textBoxDir.Text, MainForm.COMMONPASS));
                 MainForm.DIR = textBoxDir.Text;
             }
-
+            MessageBox.Show("Настройки сохранены!");
         }
 
         private void button2_Click(object sender, EventArgs e)
