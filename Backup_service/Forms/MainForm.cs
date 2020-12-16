@@ -23,6 +23,11 @@ namespace Backup_service
         public MainForm(string pass = "")
         {
             InitializeComponent();
+            ToolTip toolTip1 = new ToolTip();
+            toolTip1.SetToolTip(button1, "Скачать с сервера");
+            toolTip1.SetToolTip(button5, "Загрузить на сервер");
+            toolTip1.SetToolTip(button4, "Удалить с сервера");
+            toolTip1.SetToolTip(button2, "Обновить списки файлов");
             if (pass != "")
             {
                 try
@@ -101,7 +106,7 @@ namespace Backup_service
 
 
         //Построение дерева файловой системы ftp сервера из другого потока
-        public static void ListDirectoryFromInvoke(TreeView treeView, string Host, string UserName, string password)
+        public void ListDirectoryFromInvoke(TreeView treeView, string Host, string UserName, string password)
         {
             Ftp_Client ftp = new Ftp_Client();
             ftp.Host = Host;
@@ -141,7 +146,7 @@ namespace Backup_service
             treeView1.Invoke((MethodInvoker)(() => treeView.Nodes.Add(node)));
         }
 
-        public static void updateList()
+        public void updateList()
         {
             treeView1.Invoke((MethodInvoker)(() => treeView1.Nodes.Clear()));
             if (DOMAIN != "" && USER != "" && PASS != "")
@@ -306,9 +311,8 @@ namespace Backup_service
 
         private void button5_Click(object sender, EventArgs e)
         {
-            Form UpForm = new UploadForm();
+            Form UpForm = new UploadForm(this);
             UpForm.Show();
-            
         }
         //
         //вызов окна настроек
@@ -319,7 +323,7 @@ namespace Backup_service
         }
 
         //обновление информационной строки из другого потока
-        private static void UpdateInfoLabel(string text)
+        internal void UpdateInfoLabel(string text)
         {
             if (label1.InvokeRequired) //Если обратились к контролу не из того потока, в котором конрол был создан, то...
                 label1.Invoke((Action<string>)UpdateInfoLabel, text); //Вызываем этот же метод через Invoke
@@ -585,57 +589,6 @@ namespace Backup_service
                 }
             }
 
-        }
-
-        public static void UploadFile(string domain, string user, string pass, string filePath, string FolderName = "/")
-        {
-            thread = (new System.Threading.Thread(delegate () {
-                //отключаем кнопки
-                button1.Invoke((MethodInvoker)(() => button1.Enabled = false));
-                button2.Invoke((MethodInvoker)(() => button2.Enabled = false));
-                button4.Invoke((MethodInvoker)(() => button4.Enabled = false));
-                button5.Invoke((MethodInvoker)(() => button5.Enabled = false));
-                progressBar1.Invoke((MethodInvoker)(() => progressBar1.Value=progressBar1.Maximum));
-                UpdateInfoLabel(System.IO.Path.GetFileName(filePath));
-                Ftp_Client ftp = new Ftp_Client();
-                ftp.Host = domain;
-                ftp.UserName = user;
-                ftp.Password = pass;
-                try
-                {
-                    ftp.UploadFile(FolderName, filePath);
-                    updateList();
-                }
-                catch (System.Net.WebException e)
-                {
-                    try
-                    {
-                        if (FolderName == "/")
-                            MessageBox.Show(e.Message, "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        else
-                        {
-                            FolderName = FolderName.Replace("/", "");
-                            ftp.CreateDirectory("/", FolderName);
-                            ftp.UploadFile('/' + FolderName + '/', filePath);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message, "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    }
-                }
-                
-                button1.Invoke((MethodInvoker)(() => button1.Enabled = true));
-                button2.Invoke((MethodInvoker)(() => button2.Enabled = true));
-                button4.Invoke((MethodInvoker)(() => button4.Enabled = true));
-                button5.Invoke((MethodInvoker)(() => button5.Enabled = true));
-                progressBar1.Invoke((MethodInvoker)(() => progressBar1.Value = 0));
-                UpdateInfoLabel("");
-
-            }));
-            thread.IsBackground = true;
-            thread.Start();
-            
         }
     }
 }
