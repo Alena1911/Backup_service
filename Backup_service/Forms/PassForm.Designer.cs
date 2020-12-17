@@ -39,7 +39,7 @@
             this.PasswordText.Location = new System.Drawing.Point(50, 45);
             this.PasswordText.Name = "PasswordText";
             this.PasswordText.PasswordChar = '*';
-            this.PasswordText.Size = new System.Drawing.Size(206, 20);
+            this.PasswordText.Size = new System.Drawing.Size(206, 22);
             this.PasswordText.TabIndex = 0;
             this.PasswordText.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PasswordText_KeyDown);
             // 
@@ -58,14 +58,14 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(47, 19);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(209, 13);
+            this.label1.Size = new System.Drawing.Size(219, 13);
             this.label1.TabIndex = 2;
             this.label1.Text = "Введите пароль для входа в программу";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(87, 102);
+            this.label2.Location = new System.Drawing.Point(47, 102);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(0, 13);
             this.label2.TabIndex = 3;

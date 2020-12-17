@@ -114,6 +114,7 @@ namespace Backup_service.Forms
                             FolderName = FolderName.Replace("/", "");
                             ftp.CreateDirectory("/", FolderName);
                             ftp.UploadFile('/' + FolderName + '/', filePath);
+                            main.updateList();
                         }
                     }
                     catch (Exception ex)
