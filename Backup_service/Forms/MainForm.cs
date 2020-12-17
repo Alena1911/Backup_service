@@ -23,6 +23,7 @@ namespace Backup_service
         public MainForm(string pass = "")
         {
             InitializeComponent();
+            //подсказки на кнопках
             ToolTip toolTip1 = new ToolTip();
             toolTip1.SetToolTip(button1, "Скачать с сервера");
             toolTip1.SetToolTip(button5, "Загрузить на сервер");
@@ -32,6 +33,7 @@ namespace Backup_service
             {
                 try
                 {
+                    //считываем настройки сервера из ini файла
                     COMMONPASS = pass;
                     DOMAIN = EncryptDecrypt.DeShifrovka(INI.ReadINI("MainSettings", "DOMAIN"), COMMONPASS);
                     USER = EncryptDecrypt.DeShifrovka(INI.ReadINI("MainSettings", "USER"), COMMONPASS);
@@ -49,7 +51,7 @@ namespace Backup_service
                     MessageBox.Show("Ошибка извлечения файла конфигурации", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     Program.CloseAllWindows();
                 }
-                //строим деревья для каждого сервера
+                //строим деревья для каждого сервера,если настройки для него прочитаны из ini файла
                 if (DOMAIN!="" && USER!=""&& PASS != "")
                     ListDirectory(treeView1,DOMAIN,USER,PASS);
                 if (DOMAIN2 != "" && USER2 != "" && PASS2 != "")
@@ -70,7 +72,6 @@ namespace Backup_service
             ftp.Host = Host;
             ftp.UserName = UserName;
             ftp.Password = password;
-            //treeView.Nodes.Clear();
 
             var stack = new Stack<TreeNode>();
             var rootDirectory = Host;
@@ -112,7 +113,6 @@ namespace Backup_service
             ftp.Host = Host;
             ftp.UserName = UserName;
             ftp.Password = password;
-            //treeView.Nodes.Clear();
 
             var stack = new Stack<TreeNode>();
             var rootDirectory = Host;
@@ -146,6 +146,7 @@ namespace Backup_service
             treeView1.Invoke((MethodInvoker)(() => treeView.Nodes.Add(node)));
         }
 
+        //Обновление деревьев всех серверов из другого потока
         public void updateList()
         {
             treeView1.Invoke((MethodInvoker)(() => treeView1.Nodes.Clear()));
@@ -198,9 +199,9 @@ namespace Backup_service
                 button4.Invoke((MethodInvoker)(() => button4.Enabled = false));
                 button5.Invoke((MethodInvoker)(() => button5.Enabled = false));
                 Ftp_Client ftp = new Ftp_Client();
+                progressBar1.Invoke((MethodInvoker)(() => progressBar1.Maximum = forDownload.Count + forDownload2.Count + forDownload3.Count));
                 if (forDownload.Count > 0)
                 {
-                    progressBar1.Invoke((MethodInvoker)(() => progressBar1.Maximum = forDownload.Count));
                     ftp.Host = DOMAIN;
                     ftp.UserName = USER;
                     ftp.Password = PASS;
@@ -228,12 +229,10 @@ namespace Backup_service
                         }
                     }
                     forDownload.Clear();
-                    progressBar1.Invoke((MethodInvoker)(() => progressBar1.Value = 0));
                 }
 
                 if (forDownload2.Count > 0)
                 {
-                    progressBar1.Invoke((MethodInvoker)(() => progressBar1.Maximum = forDownload2.Count));
                     ftp.Host = DOMAIN2;
                     ftp.UserName = USER2;
                     ftp.Password = PASS2;
@@ -261,12 +260,10 @@ namespace Backup_service
                         }
                     }
                     forDownload2.Clear();
-                    progressBar1.Invoke((MethodInvoker)(() => progressBar1.Value = 0));
                 }
 
                 if (forDownload3.Count > 0)
                 {
-                    progressBar1.Invoke((MethodInvoker)(() => progressBar1.Maximum = forDownload3.Count));
                     ftp.Host = DOMAIN3;
                     ftp.UserName = USER3;
                     ftp.Password = PASS3;
@@ -294,9 +291,8 @@ namespace Backup_service
                         }
                     }
                     forDownload3.Clear();
-                    progressBar1.Invoke((MethodInvoker)(() => progressBar1.Value = 0));
                 }
-                
+                progressBar1.Invoke((MethodInvoker)(() => progressBar1.Value = 0));
                 treeView1.Invoke((MethodInvoker)(() => treeView1.Nodes.Clear()));
                 BeginInvoke(new Action(() => updateList()));
                 UpdateInfoLabel("");
@@ -309,6 +305,7 @@ namespace Backup_service
             thread.Start();
         }
 
+        //открытие формы выгрузки на сервер 
         private void button5_Click(object sender, EventArgs e)
         {
             Form UpForm = new UploadForm(this);
