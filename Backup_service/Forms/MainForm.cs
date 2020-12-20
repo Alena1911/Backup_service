@@ -522,7 +522,74 @@ namespace Backup_service
         //добавление в лист forDownload, forDownload1, forDownload2 путей файлов и папок, отмеченных в дереве
         private void treeView1_AfterCheck(object sender, TreeViewEventArgs e)
         {
-            if (e.Node.FullPath.Substring(0, e.Node.FullPath.IndexOf('\\')) == DOMAIN)
+
+            if (e.Node.Text == DOMAIN)
+            {
+                if (e.Node.Checked)
+                {
+                    forDownload.Add((string)e.Node.Tag);
+                    if (e.Node.Nodes.Count > 0)
+                    {
+                        foreach (TreeNode c in e.Node.Nodes)
+                        {
+                            c.Checked = true;
+                        }
+                    }
+                }
+                else
+                {
+                    forDownload.Remove((string)e.Node.Tag);
+                    foreach (TreeNode c in e.Node.Nodes)
+                    {
+                        c.Checked = false;
+                    }
+                }
+            }
+            else if (e.Node.Text == DOMAIN2)
+            {
+                if (e.Node.Checked)
+                {
+                    forDownload2.Add((string)e.Node.Tag);
+                    if (e.Node.Nodes.Count > 0)
+                    {
+                        foreach (TreeNode c in e.Node.Nodes)
+                        {
+                            c.Checked = true;
+                        }
+                    }
+                }
+                else
+                {
+                    forDownload2.Remove((string)e.Node.Tag);
+                    foreach (TreeNode c in e.Node.Nodes)
+                    {
+                        c.Checked = false;
+                    }
+                }
+            }
+            else if (e.Node.Text == DOMAIN3)
+            {
+                if (e.Node.Checked)
+                {
+                    forDownload3.Add((string)e.Node.Tag);
+                    if (e.Node.Nodes.Count > 0)
+                    {
+                        foreach (TreeNode c in e.Node.Nodes)
+                        {
+                            c.Checked = true;
+                        }
+                    }
+                }
+                else
+                {
+                    forDownload3.Remove((string)e.Node.Tag);
+                    foreach (TreeNode c in e.Node.Nodes)
+                    {
+                        c.Checked = false;
+                    }
+                }
+            }
+            else if (e.Node.FullPath.Substring(0, e.Node.FullPath.IndexOf('\\')) == DOMAIN)
             {
                 if (e.Node.Checked)
                 {

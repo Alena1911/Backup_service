@@ -21,24 +21,27 @@ namespace Backup_service.Forms
             main = f;
         }
 
+        //загрузка в корень
         private void button2_Click(object sender, EventArgs e)
         {
-            var filePath = string.Empty;
-            OpenFileDialog openFileDialog = new OpenFileDialog();
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Multiselect = true,
+                Title = "Выберите файлы"
+            };
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                filePath = openFileDialog.FileName;
                 if (comboBox1.SelectedIndex == 0)
                 {
-                    UploadFile(MainForm.DOMAIN, MainForm.USER, MainForm.PASS,filePath);
+                    UploadFile(MainForm.DOMAIN, MainForm.USER, MainForm.PASS, openFileDialog.FileNames);
                 }
                 else if (comboBox1.SelectedIndex == 1)
                 {
-                    UploadFile(MainForm.DOMAIN2, MainForm.USER2, MainForm.PASS2, filePath);
+                    UploadFile(MainForm.DOMAIN2, MainForm.USER2, MainForm.PASS2, openFileDialog.FileNames);
                 }
                 else if (comboBox1.SelectedIndex == 2)
                 {
-                    UploadFile(MainForm.DOMAIN3, MainForm.USER3, MainForm.PASS3, filePath);
+                    UploadFile(MainForm.DOMAIN3, MainForm.USER3, MainForm.PASS3, openFileDialog.FileNames);
                 }
                 Close();
             }
@@ -51,40 +54,43 @@ namespace Backup_service.Forms
             button3.Visible = true;
         }
 
+        //загрузка в папку
         private void button3_Click(object sender, EventArgs e)
         {
-            var filePath = string.Empty;
-            OpenFileDialog openFileDialog = new OpenFileDialog();
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Multiselect = true,
+                Title = "Выберите файлы"
+            };
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                filePath = openFileDialog.FileName;
                 if (comboBox1.SelectedIndex == 0)
                 {
                     if (textBox1.Text == "")
-                        UploadFile(MainForm.DOMAIN, MainForm.USER, MainForm.PASS, filePath);
-                    if (textBox1.Text[0] == '/') UploadFile(MainForm.DOMAIN, MainForm.USER, MainForm.PASS, filePath, textBox1.Text + '/');
-                    else UploadFile(MainForm.DOMAIN, MainForm.USER, MainForm.PASS, filePath, '/' + textBox1.Text + '/');
+                        UploadFile(MainForm.DOMAIN, MainForm.USER, MainForm.PASS, openFileDialog.FileNames);
+                    else if (textBox1.Text[0] == '/') UploadFile(MainForm.DOMAIN, MainForm.USER, MainForm.PASS, openFileDialog.FileNames, textBox1.Text + '/');
+                    else UploadFile(MainForm.DOMAIN, MainForm.USER, MainForm.PASS, openFileDialog.FileNames, '/' + textBox1.Text + '/');
                 }
                 else if (comboBox1.SelectedIndex == 1)
                 {
                     if (textBox1.Text == "")
-                        UploadFile(MainForm.DOMAIN2, MainForm.USER2, MainForm.PASS2, filePath);
-                    if (textBox1.Text[0] == '/') UploadFile(MainForm.DOMAIN2, MainForm.USER2, MainForm.PASS2, filePath, textBox1.Text + '/');
-                    else UploadFile(MainForm.DOMAIN2, MainForm.USER2, MainForm.PASS2, filePath, '/' + textBox1.Text + '/');
+                        UploadFile(MainForm.DOMAIN2, MainForm.USER2, MainForm.PASS2, openFileDialog.FileNames);
+                    else if (textBox1.Text[0] == '/') UploadFile(MainForm.DOMAIN2, MainForm.USER2, MainForm.PASS2, openFileDialog.FileNames, textBox1.Text + '/');
+                    else UploadFile(MainForm.DOMAIN2, MainForm.USER2, MainForm.PASS2, openFileDialog.FileNames, '/' + textBox1.Text + '/');
                 }
                 else if (comboBox1.SelectedIndex == 2)
                 {
                     if (textBox1.Text == "")
-                        UploadFile(MainForm.DOMAIN3, MainForm.USER3, MainForm.PASS3, filePath);
-                    if (textBox1.Text[0] == '/') UploadFile(MainForm.DOMAIN3, MainForm.USER3, MainForm.PASS3, filePath, textBox1.Text + '/');
-                    else UploadFile(MainForm.DOMAIN3, MainForm.USER3, MainForm.PASS3, filePath, '/' + textBox1.Text + '/');
+                        UploadFile(MainForm.DOMAIN3, MainForm.USER3, MainForm.PASS3, openFileDialog.FileNames);
+                    else if (textBox1.Text[0] == '/') UploadFile(MainForm.DOMAIN3, MainForm.USER3, MainForm.PASS3, openFileDialog.FileNames, textBox1.Text + '/');
+                    else UploadFile(MainForm.DOMAIN3, MainForm.USER3, MainForm.PASS3, openFileDialog.FileNames, '/' + textBox1.Text + '/');
                 }
                 Close();
             }   
             
         }
 
-        public void UploadFile(string domain, string user, string pass, string filePath, string FolderName = "/")
+        public void UploadFile(string domain, string user, string pass, string[] filePaths, string FolderName = "/")
         {
             thread = (new System.Threading.Thread(delegate () {
                 //отключаем кнопки
@@ -92,47 +98,54 @@ namespace Backup_service.Forms
                 main.button2.Invoke((MethodInvoker)(() => main.button2.Enabled = false));
                 main.button4.Invoke((MethodInvoker)(() => main.button4.Enabled = false));
                 main.button5.Invoke((MethodInvoker)(() => main.button5.Enabled = false));
-                main.progressBar1.Invoke((MethodInvoker)(() => main.progressBar1.Value = main.progressBar1.Maximum));
-                main.UpdateInfoLabel(System.IO.Path.GetFileName(filePath));
+                main.progressBar1.Invoke((MethodInvoker)(() => main.progressBar1.Maximum = filePaths.Length));
                 Ftp_Client ftp = new Ftp_Client();
                 ftp.Host = domain;
                 ftp.UserName = user;
                 ftp.Password = pass;
-                try
-                {
-                    ftp.UploadFile(FolderName, filePath);
-                    main.updateList();
-                }
-                catch (System.Net.WebException e)
+                foreach (string filePath in filePaths)
                 {
                     try
                     {
-                        if (FolderName == "/")
-                            MessageBox.Show(e.Message, "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        else
+                        main.progressBar1.Invoke((MethodInvoker)(() => main.progressBar1.Value++));
+                        main.UpdateInfoLabel(System.IO.Path.GetFileName(filePath));
+                        ftp.UploadFile(FolderName, filePath);
+                    }
+                    catch (System.Net.WebException e)
+                    {
+                        try
                         {
-                            FolderName = FolderName.Replace("/", "");
-                            ftp.CreateDirectory("/", FolderName);
-                            ftp.UploadFile('/' + FolderName + '/', filePath);
+                            if (FolderName == "/")
+                            {
+                                MessageBox.Show(e.Message, "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                break;
+                            }
+                            else
+                            {
+                                FolderName = FolderName.Replace("/", "");
+                                ftp.CreateDirectory("/", FolderName);
+                                ftp.UploadFile('/' + FolderName + '/', filePath);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message, "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            break;
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message, "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    }
+                    Task.Delay(100).GetAwaiter().GetResult();
                 }
-
                 main.button1.Invoke((MethodInvoker)(() => main.button1.Enabled = true));
                 main.button2.Invoke((MethodInvoker)(() => main.button2.Enabled = true));
                 main.button4.Invoke((MethodInvoker)(() => main.button4.Enabled = true));
                 main.button5.Invoke((MethodInvoker)(() => main.button5.Enabled = true));
                 main.progressBar1.Invoke((MethodInvoker)(() => main.progressBar1.Value = 0));
                 main.UpdateInfoLabel("");
+                main.updateList();
 
             }));
             thread.IsBackground = true;
             thread.Start();
-
         }
 
     }
