@@ -109,6 +109,8 @@ namespace Backup_service.Forms
                     {
                         main.progressBar1.Invoke((MethodInvoker)(() => main.progressBar1.Value++));
                         main.UpdateInfoLabel(System.IO.Path.GetFileName(filePath));
+                        if (FolderName[0] != '/' & FolderName[FolderName.Length - 1] != '/')
+                            FolderName = "/" + FolderName + "/";
                         ftp.UploadFile(FolderName, filePath);
                     }
                     catch (System.Net.WebException e)

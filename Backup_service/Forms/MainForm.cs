@@ -205,6 +205,7 @@ namespace Backup_service
                     ftp.Host = DOMAIN;
                     ftp.UserName = USER;
                     ftp.Password = PASS;
+                    forDownload.Reverse();
                     foreach (string p in forDownload)
                     {
                         try
@@ -236,6 +237,7 @@ namespace Backup_service
                     ftp.Host = DOMAIN2;
                     ftp.UserName = USER2;
                     ftp.Password = PASS2;
+                    forDownload2.Reverse();
                     foreach (string p in forDownload2)
                     {
                         try
@@ -267,6 +269,7 @@ namespace Backup_service
                     ftp.Host = DOMAIN3;
                     ftp.UserName = USER3;
                     ftp.Password = PASS3;
+                    forDownload3.Reverse();
                     foreach (string p in forDownload3)
                     {
                         try
