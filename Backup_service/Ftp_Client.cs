@@ -174,7 +174,6 @@ namespace Backup_service
             uploadedFile.Read(file_to_bytes, 0, file_to_bytes.Length);
 
             uploadedFile.Close();
-
             //Поток для загрузки файла
             Stream writer = ftpRequest.GetRequestStream();
 

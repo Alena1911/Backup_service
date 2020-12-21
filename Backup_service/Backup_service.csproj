@@ -49,6 +49,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>ftp.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="Forms\UploadForm.cs">
       <SubType>Form</SubType>
@@ -139,6 +142,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ftp.ico" />
     <Content Include="Resources\Загрузка.png" />
     <Content Include="Resources\Обновить.png" />
     <Content Include="Resources\Отправка.png" />

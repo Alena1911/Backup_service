@@ -8,7 +8,7 @@ namespace Backup_service.Forms
         IniFiles INI = new IniFiles("config.ini");
         public static string tmpDOMAIN = MainForm.DOMAIN, tmpUSER = MainForm.USER, tmpPASS = MainForm.PASS;//объявление переменных, необходимых для работы с ftp сервером
         public static string tmpDOMAIN2 = MainForm.DOMAIN2, tmpUSER2 = MainForm.USER2, tmpPASS2 = MainForm.PASS2;
-        public static string tmpDOMAIN3 = MainForm.USER3, tmpUSER3 = MainForm.USER3, tmpPASS3 = MainForm.PASS3;
+        public static string tmpDOMAIN3 = MainForm.DOMAIN3, tmpUSER3 = MainForm.USER3, tmpPASS3 = MainForm.PASS3;
 
         private void comboBox1_Click(object sender, EventArgs e)
         {
