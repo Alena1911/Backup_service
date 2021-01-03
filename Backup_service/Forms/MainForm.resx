@@ -121,6 +121,31 @@
     <value>17, 17</value>
   </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="toolStrip1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 0</value>
+  </data>
+  <data name="toolStrip1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>453, 25</value>
+  </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="toolStrip1.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="toolStrip1.Text" xml:space="preserve">
+    <value>toolStrip1</value>
+  </data>
+  <data name="&gt;&gt;toolStrip1.Name" xml:space="preserve">
+    <value>toolStrip1</value>
+  </data>
+  <data name="&gt;&gt;toolStrip1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;toolStrip1.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;toolStrip1.ZOrder" xml:space="preserve">
+    <value>10</value>
+  </data>
   <data name="toolStripButton1.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
@@ -144,31 +169,6 @@
   </data>
   <data name="toolStripButton1.Text" xml:space="preserve">
     <value>Настройки</value>
-  </data>
-  <data name="toolStrip1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 0</value>
-  </data>
-  <data name="toolStrip1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>458, 25</value>
-  </data>
-  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="toolStrip1.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
-  </data>
-  <data name="toolStrip1.Text" xml:space="preserve">
-    <value>toolStrip1</value>
-  </data>
-  <data name="&gt;&gt;toolStrip1.Name" xml:space="preserve">
-    <value>toolStrip1</value>
-  </data>
-  <data name="&gt;&gt;toolStrip1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;toolStrip1.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;toolStrip1.ZOrder" xml:space="preserve">
-    <value>8</value>
   </data>
   <data name="button1.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -466,7 +466,7 @@
     <value>NoControl</value>
   </data>
   <data name="button1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>345, 244</value>
+    <value>345, 264</value>
   </data>
   <data name="button1.Size" type="System.Drawing.Size, System.Drawing">
     <value>30, 28</value>
@@ -484,7 +484,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;button1.ZOrder" xml:space="preserve">
-    <value>7</value>
+    <value>9</value>
   </data>
   <metadata name="openFileDialog1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>122, 17</value>
@@ -505,7 +505,120 @@
     <value>6, 13</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>458, 342</value>
+    <value>453, 357</value>
+  </data>
+  <data name="comboBox1.Items" xml:space="preserve">
+    <value>SERVER 1</value>
+  </data>
+  <data name="comboBox1.Items1" xml:space="preserve">
+    <value>SERVER 2</value>
+  </data>
+  <data name="comboBox1.Items2" xml:space="preserve">
+    <value>SERVER 3</value>
+  </data>
+  <data name="comboBox1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>31, 22</value>
+  </data>
+  <data name="comboBox1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>121, 21</value>
+  </data>
+  <data name="comboBox1.TabIndex" type="System.Int32, mscorlib">
+    <value>11</value>
+  </data>
+  <data name="&gt;&gt;comboBox1.Name" xml:space="preserve">
+    <value>comboBox1</value>
+  </data>
+  <data name="&gt;&gt;comboBox1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;comboBox1.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;comboBox1.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="tvFiles.ImageIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <metadata name="im.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>421, 17</value>
+  </metadata>
+  <data name="im.ImageStream" mimetype="application/x-microsoft.net.object.binary.base64">
+    <value>
+        AAEAAAD/////AQAAAAAAAAAMAgAAAFdTeXN0ZW0uV2luZG93cy5Gb3JtcywgVmVyc2lvbj00LjAuMC4w
+        LCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI3N2E1YzU2MTkzNGUwODkFAQAAACZTeXN0
+        ZW0uV2luZG93cy5Gb3Jtcy5JbWFnZUxpc3RTdHJlYW1lcgEAAAAERGF0YQcCAgAAAAkDAAAADwMAAADW
+        CQAAAk1TRnQBSQFMAgEBAgEAASABAAEgAQABEAEAARABAAT/ASEBAAj/AUIBTQE2BwABNgMAASgDAAFA
+        AwABEAMAAQEBAAEgBgABEBYAAyMBMwE9AXMBlgH/AToBdQGTAf8BPQFzAZUB/wE9AXQBkwH/ATwBdAGV
+        Af8BPQF0AZMB/ygAAxUBHQNDAXgDQwF4A0MBeANDAXgDQwF4A0MBeANDAXgDQwF4A0MBeANDAXgDEAEW
+        jAABPgF0AZYB/wFxAb0B3wH/AXQBvAHhAf8BcQG+AdwB/wF2Ab4B4QH/AW8BvQHfAf8BmwHaAe4B/wFD
+        AXQBmAH/AUABcwGXAf8BQgF5AZgB/wFAAXcBlgH/AT0BdQGUAf8DIwEzEAADUAGfAf4B/QH8Af8B8QLv
+        Af8B8gHxAfAB/wLzAfIB/wH1AfQB8wH/AfYC9QH/AvcB9gH/A/gB/wH6AvkF/wNKAYqMAAFDAXUBlQH/
+        AXABvwHfAf8BcwG+Ad8B/wF0Ab8B4QH/AXIBvgHgAf8BcQG/AeEB/wGgAdkB8gH/AUwBjwG7Af8BjAG+
+        AdIB/wFqAbEBzAH/AVwBpwHJAf8BawHIAeMB/wFQAZQBtgH/A0UBfQwAA1IBpgH8AfsB+gH/Ae8B7gHt
+        Af8C8AHvAf8B8gHxAfAB/wHzAvIB/wL0AfMB/wH2AvUB/wH3AvYB/wP4Bf8DSwGPjAABPwF5AZMB/wFz
+        Ab4B3wH/AXEBwQHeAf8BdQG/Ad0B/wF2Ab4B4QH/AXcBuwHdAf8BnQHaAe4B/wFQAZcBtgH/AXsBvwHe
+        Af8BcgG4AdUB/wFnAasBzgH/AXQBvQHkAf8BUwGSAbkB/wM4AVwDIwEzCAADUAGkAfwB+wH6Af8B7wHu
+        Ae0B/wLwAe8B/wHyAfEB8AH/AfMC8gH/AvQB8wH/AfYC9QH/AfcC9gH/A/gF/wNLAY+MAAFBAXUBlwH/
+        AXgBvAHeAf8BdwG+Ad0B/wF4Ab8B3gH/AXgBvQHcAf8BhwHJAeIB/wGlAeAB9AH/AU4BmQG7Af8BhgHI
+        AeEB/wGEAcAB3gH/AXYBuwHXAf8BigHPAeoB/wFPAZYBvQH/AyMBMwwAA1ABpAH9AvwB/wHwAu8B/wLx
+        AfAB/wHzAvIB/wL0AfMB/wP1Af8B9wL2Af8C+AH3Af8D+QX/A0sBj4wAAUIBegGXAf8BewHIAeQB/wGB
+        AcYB5wH/AXsBxQHiAf8BgAHKAeQB/wGUAdMB7wH/Aa4B4wH4Af8BVgGdAb4B/wGLAc0B5gH/AYwBzAHl
+        Af8BiQHGAeAB/wGXAdoB7wH/AVYBmgG9Af8QAANQAaQB/wH+Af0B/wLxAfAB/wHzAvIB/wH0AvMB/wH2
+        AvUB/wH3AvYB/wL4AfcB/wP5Af8C+wH6Bf8DSwGPjAABRAF7AZoB/wGLAdAB6wH/AY0B0AHrAf8BjQHR
+        AegB/wGOAdEB6AH/AaQB3AH1Af8BsgHnAfQB/wHJAfcC/wFgAaMBvwH/AaYB2QHzAf8BlgHPAegB/wGs
+        AekB6wH/AVwBngHCAf8QAANQAaQE/wHzAvIB/wL0AfMB/wL1AfQB/wL3AfYB/wP4Af8B+gL5Af8B+wL6
+        Af8D/AX/A0sBj4wAAUYBggGdAf8BoQHaAfMB/wGmAdwB8wH/AacB3QH0Af8BpgHcAfUB/wGqAeMB+AH/
+        AcUB7wL/Ac0B9gL/AWkBpgHFAf8BrwHjAfAB/wGsAecB+wH/AWUBowHGAf8UAANQAaQE/wH0AvMB/wL1
+        AfQB/wP2Af8C+AH3Af8D+QH/AvsB+gH/A/wB/wP9Bf8DSwGPjAABSAGCAaAB/wGxAeMB9wH/AbYB4AH3
+        Af8BsQHgAfYB/wG0AeMB+QH/AbEB5gH6Af8BwgHvAfwB/wHQAfsB/gH/AWwBrgHGAf8BuAHlAfoB/wHD
+        AfIC/wFtAaoByQH/FAADUAGkBP8C9QH0Af8B9wL2Af8B+AL3Af8D+QH/AvsB+gH/A/wB/wP9Cf8DSwGP
+        jAABTwGIAaMB/wG7Ae0B+QH/Ab0B8AH6Af8BvAHuAfoB/wHDAe0B+gH/AcUB8wH6Af8BwQHyAfwB/wHU
+        AfoB/gH/AYEBuAHNAf8BygHrAfsB/wHKAfQC/wGDAboBzwH/FAADUAGkBP8B9wL2Af8C+AH3Af8D+QH/
+        AvsB+gH/A/wB/wH+Av0N/wNLAY+MAAFVAYgBpwH/AcUB7AH6Af8BxAHvAfgB/wHDAe0B+QH/AcMB7AH7
+        Af8BxQH3Af0B/wHJAfAB/gH/AdcB/AH6Af8BjQG7Ad0B/wHVAfAB/gH/AdIB+AH9Af8BhgG8AdUB/xQA
+        A1ABpAT/AvgB9wH/A/kB/wP6Af8D/AH/A/0J/wP9Bf8DSwGPjAABVQGJAaUB/wHIAfcC/wHPAfkC/wHT
+        AfcB/QH/AdMB+wL/AdUB+AH8Af8B3AH6Av8B4AH4Af4B/wGJAcIB1wH/AdMB7QH9Af8B1QH2Av8BlAG+
+        AdUB/xQAA1ABpAT/A/kB/wH7AvoB/wL8AfsB/wP9Cf8D+gH/Ae8C8AH/AvYB9wH/A0sBkYwAAVUBjAGm
+        Af8BagGnAcYB/wFnAakBxwH/AWsBpgHFAf8BdQGsAcwB/wF7AbsB0wH/AYoBvQHRAf8BkAHBAdcB/wHY
+        AfMB/QH/AdIB8gH4Af8B3QH6Av8BlAHDAdgB/xQAA1ABpAT/AvsB+gH/A/wB/wP9Cf8D/gH/AeUC5gH/
+        A9oB/wOLAeYDGgEkjAADIwEzAV4BkgGqAf8B0gH1Av8B1QH5Av8B0wH5Af0B/wHeAfsC/wHfAfkC/wHd
+        AfYC/wHkAfoC/wHeAf0B/AH/Ad0B/AH7Af8BlwHDAdoB/xQAA1ABpAT/A/0B/wP+Cf8D/QH/A/kB/wLy
+        AfMB/wOdAekDHAEnlAADIwEzAW4BrAHJAf8BdQGwAcsB/wF5AbMB0QH/AY4BvgHWAf8BkQHEAdgB/wGd
+        AcYB3QH/AZoBxwHcAf8BmAHJAd8B/wGbAcYB2QH/AyMBMxQAA08BpRT/AvsB/AH/AfYB9wH4Af8DjQHk
+        AyMBM9gAAzsBZQMuAUgDLgFHAy4BRwMuAUcDLgFHAy4BRwMuAUcDGAEhlAABQgFNAT4HAAE+AwABKAMA
+        AUADAAEQAwABAQEAAQEFAAGAFwAD/wEAAYAB/wHAAQMEAAGAAQMBwAEDBAABgAEBAcABAwQAAYABAAHA
+        AQMEAAGAAQEBwAEDBAABgAEDAcABAwQAAYABAwHAAQMEAAGAAQcBwAEDBAABgAEHAcABAwQAAYABBwHA
+        AQMEAAGAAQcBwAEDBAABgAEHAcABAwQAAYABBwHAAQMEAAGAAQcBwAEHBAABwAEHAcABDwQAAv8BwAEf
+        BAAL
+</value>
+  </data>
+  <data name="tvFiles.Location" type="System.Drawing.Point, System.Drawing">
+    <value>250, 49</value>
+  </data>
+  <data name="tvFiles.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>2, 2, 2, 2</value>
+  </data>
+  <data name="tvFiles.SelectedImageIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="tvFiles.Size" type="System.Drawing.Size, System.Drawing">
+    <value>197, 205</value>
+  </data>
+  <data name="tvFiles.TabIndex" type="System.Int32, mscorlib">
+    <value>10</value>
+  </data>
+  <data name="&gt;&gt;tvFiles.Name" xml:space="preserve">
+    <value>tvFiles</value>
+  </data>
+  <data name="&gt;&gt;tvFiles.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TreeView, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tvFiles.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;tvFiles.ZOrder" xml:space="preserve">
+    <value>1</value>
   </data>
   <data name="button5.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -795,7 +908,7 @@
     <value>Stretch</value>
   </data>
   <data name="button5.Location" type="System.Drawing.Point, System.Drawing">
-    <value>309, 244</value>
+    <value>309, 264</value>
   </data>
   <data name="button5.Size" type="System.Drawing.Size, System.Drawing">
     <value>30, 28</value>
@@ -813,7 +926,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;button5.ZOrder" xml:space="preserve">
-    <value>0</value>
+    <value>2</value>
   </data>
   <data name="button4.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -1396,7 +1509,7 @@
     <value>Stretch</value>
   </data>
   <data name="button4.Location" type="System.Drawing.Point, System.Drawing">
-    <value>381, 244</value>
+    <value>381, 264</value>
   </data>
   <data name="button4.Size" type="System.Drawing.Size, System.Drawing">
     <value>30, 28</value>
@@ -1414,10 +1527,10 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;button4.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>3</value>
   </data>
   <data name="button3.Location" type="System.Drawing.Point, System.Drawing">
-    <value>198, 313</value>
+    <value>198, 333</value>
   </data>
   <data name="button3.Size" type="System.Drawing.Size, System.Drawing">
     <value>75, 23</value>
@@ -1438,7 +1551,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;button3.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>4</value>
   </data>
   <data name="button2.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -1733,7 +1846,7 @@
     <value>Stretch</value>
   </data>
   <data name="button2.Location" type="System.Drawing.Point, System.Drawing">
-    <value>417, 244</value>
+    <value>417, 264</value>
   </data>
   <data name="button2.Size" type="System.Drawing.Size, System.Drawing">
     <value>30, 28</value>
@@ -1751,13 +1864,13 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;button2.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>5</value>
   </data>
   <data name="label1.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
   <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 304</value>
+    <value>12, 324</value>
   </data>
   <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
     <value>430, 13</value>
@@ -1778,13 +1891,13 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
-    <value>4</value>
+    <value>6</value>
   </data>
   <data name="progressBar1.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
   <data name="progressBar1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 278</value>
+    <value>12, 298</value>
   </data>
   <data name="progressBar1.Size" type="System.Drawing.Size, System.Drawing">
     <value>435, 23</value>
@@ -1802,13 +1915,19 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;progressBar1.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>7</value>
+  </data>
+  <data name="treeView1.ImageIndex" type="System.Int32, mscorlib">
+    <value>0</value>
   </data>
   <data name="treeView1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 28</value>
+    <value>12, 49</value>
+  </data>
+  <data name="treeView1.SelectedImageIndex" type="System.Int32, mscorlib">
+    <value>0</value>
   </data>
   <data name="treeView1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>435, 205</value>
+    <value>202, 205</value>
   </data>
   <data name="treeView1.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
@@ -1823,7 +1942,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;treeView1.ZOrder" xml:space="preserve">
-    <value>6</value>
+    <value>8</value>
   </data>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -2753,6 +2872,12 @@
   </data>
   <data name="&gt;&gt;fileSystemWatcher1.Type" xml:space="preserve">
     <value>System.IO.FileSystemWatcher, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;im.Name" xml:space="preserve">
+    <value>im</value>
+  </data>
+  <data name="&gt;&gt;im.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ImageList, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>MainForm</value>

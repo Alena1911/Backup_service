@@ -52,19 +52,50 @@ namespace Backup_service
                     Program.CloseAllWindows();
                 }
                 //строим деревья для каждого сервера,если настройки для него прочитаны из ini файла
-                if (DOMAIN!="" && USER!=""&& PASS != "")
-                    ListDirectory(treeView1,DOMAIN,USER,PASS);
-                if (DOMAIN2 != "" && USER2 != "" && PASS2 != "")
-                    ListDirectory(treeView1, DOMAIN2, USER2, PASS2);
-                if (DOMAIN3 != "" && USER3 != "" && PASS3 != "")
-                    ListDirectory(treeView1, DOMAIN3, USER3, PASS3);
+                if (DOMAIN != "" && USER != "" && PASS != "")
+                    ListDirectory(treeView1, DOMAIN, USER, PASS);
 
 
+                DriveInfo[] allDrives = DriveInfo.GetDrives();
+                foreach (var d in allDrives)
+                {
+                    var root = new TreeNode() { Text = d.Name, Tag = d.Name };
+                    tvFiles.Nodes.Add(root);
+                    Build(root);
+                }
+                comboBox1.SelectedIndex = 0;
             }
         }
 
+        //построение дерева файловой системы
+        private void Build(TreeNode parent)
+        {
+            var path = parent.Tag as string;
+            parent.Nodes.Clear();
 
-        
+            try
+            {
+                //create dirs
+                foreach (var dir in Directory.GetDirectories(path))
+                    parent.Nodes.Add(new TreeNode(Path.GetFileName(dir), new[] { new TreeNode("...") }) { Tag = dir });
+
+                //create files
+                foreach (var file in Directory.GetFiles(path))
+                    parent.Nodes.Add(new TreeNode(Path.GetFileName(file), 1, 1) { Tag = file });
+            }
+            catch
+            {
+                //oops, no access...
+            }
+        }
+
+        //построение вложенных в узел файлов и папок при развёртывании узла
+        private void tvFiles_BeforeExpand(object sender, TreeViewCancelEventArgs e)
+        {
+            Build(e.Node);
+        }
+
+
         //Построение дерева файловой системы ftp сервера 
         public static void ListDirectory(TreeView treeView, string Host, string UserName, string password)
         {
@@ -87,14 +118,14 @@ namespace Backup_service
                     foreach (var directory in directoryInfo)
                     {
                         if (directory.IsDirectory && directory.Name!="?" && !directory.Name.Contains("????")) {
-                            var childDirectoryNode = new TreeNode(directory.Name) { Tag = currentNode.Tag+directory.Name+'/'};
+                            var childDirectoryNode = new TreeNode(directory.Name,0,0) { Tag = currentNode.Tag+directory.Name+'/'};
                             currentNode.Nodes.Add(childDirectoryNode);
                             stack.Push(childDirectoryNode);
                         }
                     }
                     foreach (var file in directoryInfo)
                         if (!file.IsDirectory && file.Name != "?" && !file.Name.Contains("????"))
-                            currentNode.Nodes.Add(new TreeNode(file.Name) { Tag = currentNode.Tag + file.Name + "/f"}); ; //пометка f в конце пути означает, что это файл!
+                            currentNode.Nodes.Add(new TreeNode(file.Name,1,1) { Tag = currentNode.Tag + file.Name + "/f"}); ; //пометка f в конце пути означает, что это файл!
                 }
                 catch(Exception ex)
                 {
@@ -129,14 +160,14 @@ namespace Backup_service
                     {
                         if (directory.IsDirectory && directory.Name != "?" && !directory.Name.Contains("????"))
                         {
-                            var childDirectoryNode = new TreeNode(directory.Name) { Tag = currentNode.Tag + directory.Name + '/' };
+                            var childDirectoryNode = new TreeNode(directory.Name,0,0) { Tag = currentNode.Tag + directory.Name + '/' };
                             currentNode.Nodes.Add(childDirectoryNode);
                             stack.Push(childDirectoryNode);
                         }
                     }
                     foreach (var file in directoryInfo)
                         if (!file.IsDirectory && file.Name != "?" && !file.Name.Contains("????"))
-                            currentNode.Nodes.Add(new TreeNode(file.Name) { Tag = currentNode.Tag + file.Name + "/f" }); ; //пометка f в конце пути означает, что это файл!
+                            currentNode.Nodes.Add(new TreeNode(file.Name,1,1) { Tag = currentNode.Tag + file.Name + "/f" }); ; //пометка f в конце пути означает, что это файл!
                 }
                 catch (Exception ex)
                 {
@@ -150,12 +181,22 @@ namespace Backup_service
         public void updateList()
         {
             treeView1.Invoke((MethodInvoker)(() => treeView1.Nodes.Clear()));
-            if (DOMAIN != "" && USER != "" && PASS != "")
-                ListDirectoryFromInvoke(treeView1, DOMAIN, USER, PASS);
-            if (DOMAIN2 != "" && USER2 != "" && PASS2 != "")
-                ListDirectoryFromInvoke(treeView1, DOMAIN2, USER2, PASS2);
-            if (DOMAIN3 != "" && USER3 != "" && PASS3 != "")
-                ListDirectoryFromInvoke(treeView1, DOMAIN3, USER3, PASS3);
+            var cindex = (int)comboBox1.Invoke(new Func<int>(() => comboBox1.SelectedIndex));
+            if (cindex == 0)
+            {
+                if (DOMAIN != "" && USER != "" && PASS != "")
+                    ListDirectoryFromInvoke(treeView1, DOMAIN, USER, PASS);
+            }
+            else if (cindex == 1)
+            {
+                if (DOMAIN2 != "" && USER2 != "" && PASS2 != "")
+                    ListDirectoryFromInvoke(treeView1, DOMAIN2, USER2, PASS2);
+            }
+            else if (cindex == 2)
+            {
+                if (DOMAIN3 != "" && USER3 != "" && PASS3 != "")
+                    ListDirectoryFromInvoke(treeView1, DOMAIN3, USER3, PASS3);
+            }
         }
 
         //обновление дерева папок
@@ -163,6 +204,27 @@ namespace Backup_service
         {
             updateList();
         }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            treeView1.Nodes.Clear();
+            if (comboBox1.SelectedIndex == 0)
+            {
+                if (DOMAIN != "" && USER != "" && PASS != "")
+                    ListDirectory(treeView1, DOMAIN, USER, PASS);
+            }
+            else if (comboBox1.SelectedIndex == 1)
+            {
+                if (DOMAIN2 != "" && USER2 != "" && PASS2 != "")
+                    ListDirectory(treeView1, DOMAIN2, USER2, PASS2);
+            }
+            else if (comboBox1.SelectedIndex == 2)
+            {
+                if (DOMAIN3 != "" && USER3 != "" && PASS3 != "")
+                    ListDirectory(treeView1, DOMAIN3, USER3, PASS3);
+            }
+        }
+
 
         //закрытие всех форм при закрытии основной формы
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
@@ -307,7 +369,7 @@ namespace Backup_service
             thread.IsBackground = true;
             thread.Start();
         }
-        //test1
+
         //открытие формы выгрузки на сервер 
         private void button5_Click(object sender, EventArgs e)
         {

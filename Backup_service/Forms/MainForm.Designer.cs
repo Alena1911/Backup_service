@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
@@ -41,6 +42,9 @@
             this.button4 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.im = new System.Windows.Forms.ImageList(this.components);
+            this.tvFiles = new System.Windows.Forms.TreeView();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcher1)).BeginInit();
             this.SuspendLayout();
@@ -82,6 +86,7 @@
             // 
             this.treeView1.CheckBoxes = true;
             resources.ApplyResources(this.treeView1, "treeView1");
+            this.treeView1.ImageList = this.im;
             this.treeView1.Name = "treeView1";
             this.treeView1.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterCheck);
             // 
@@ -123,10 +128,38 @@
             resources.ApplyResources(this.progressBar1, "progressBar1");
             this.progressBar1.Name = "progressBar1";
             // 
+            // im
+            // 
+            this.im.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("im.ImageStream")));
+            this.im.TransparentColor = System.Drawing.Color.Transparent;
+            this.im.Images.SetKeyName(0, "folder_16x16.png");
+            this.im.Images.SetKeyName(1, "file_16x16.png");
+            // 
+            // tvFiles
+            // 
+            resources.ApplyResources(this.tvFiles, "tvFiles");
+            this.tvFiles.ImageList = this.im;
+            this.tvFiles.Name = "tvFiles";
+            this.tvFiles.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.tvFiles_BeforeExpand);
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            resources.GetString("comboBox1.Items"),
+            resources.GetString("comboBox1.Items1"),
+            resources.GetString("comboBox1.Items2")});
+            resources.ApplyResources(this.comboBox1, "comboBox1");
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            // 
             // MainForm
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.comboBox1);
+            this.Controls.Add(this.tvFiles);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.button3);
@@ -161,6 +194,9 @@
         internal System.Windows.Forms.Button button4;
         internal System.Windows.Forms.Button button5;
         internal System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.TreeView tvFiles;
+        private System.Windows.Forms.ImageList im;
+        private System.Windows.Forms.ComboBox comboBox1;
     }
 }
 
