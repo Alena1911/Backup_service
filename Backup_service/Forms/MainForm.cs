@@ -3,16 +3,19 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
+using System.Threading.Tasks;
 
 namespace Backup_service
 {
     public partial class MainForm : Form
     {
         
-        private IniFiles INI = new IniFiles("config.ini");// инициализация ini файла
-        public List<string> forDownload = new List<string>();//список ссылок на загрузку
-        public List<string> forDownload2 = new List<string>();//список ссылок на загрузку
-        public List<string> forDownload3 = new List<string>();//список ссылок на загрузку
+        private IniFiles INI = new IniFiles("config.ini"); // инициализация ini файла
+        public List<string> forDownload = new List<string>(); //список ссылок на загрузку
+        public List<string> forDownload2 = new List<string>(); //список ссылок на загрузку
+        public List<string> forDownload3 = new List<string>(); //список ссылок на загрузку
+        public List<string> forDownloadLocal = new List<string>(); //список локальных ссылок на загрузку
+        public List<string> downloadedToFTP = new List<string>(); //список локальных ссылок на загрузку
         public static string DOMAIN="", USER="", PASS="", COMMONPASS="", DIR="";//объявление переменных, необходимых для работы с ftp сервером
         public static string DOMAIN2="", USER2="", PASS2="";
         public static string DOMAIN3="", USER3="", PASS3="";
@@ -55,7 +58,9 @@ namespace Backup_service
                 if (DOMAIN != "" && USER != "" && PASS != "")
                     ListDirectory(treeView1, DOMAIN, USER, PASS);
 
-
+                tvFiles.HideSelection = false;
+                treeView1.HideSelection = false;
+                comboBox1.SelectedIndex = 0;
                 DriveInfo[] allDrives = DriveInfo.GetDrives();
                 foreach (var d in allDrives)
                 {
@@ -63,10 +68,22 @@ namespace Backup_service
                     tvFiles.Nodes.Add(root);
                     Build(root);
                 }
-                comboBox1.SelectedIndex = 0;
             }
         }
 
+        //обновление дерева локальной файловой системы
+        private void updateLocalTree()
+        {
+            tvFiles.Invoke((MethodInvoker)(() => tvFiles.Nodes.Clear()));
+            DriveInfo[] allDrives = DriveInfo.GetDrives();
+            foreach (var d in allDrives)
+            {
+                var root = new TreeNode() { Text = d.Name, Tag = d.Name };
+                tvFiles.Invoke((MethodInvoker)(() => tvFiles.Nodes.Add(root)));
+                tvFiles.Invoke((MethodInvoker)(() => Build(root)));
+            }
+            forDownloadLocal.Clear();
+        }
         //построение дерева файловой системы
         private void Build(TreeNode parent)
         {
@@ -225,11 +242,84 @@ namespace Backup_service
             }
         }
 
+        //добавление файлов и папок в локальный список на выгрузку
+        private void tvFiles_AfterCheck(object sender, TreeViewEventArgs e)
+        {
+            if (e.Node.Checked)
+            {
+                e.Node.Expand();
+                forDownloadLocal.Add((string)e.Node.Tag);
+                if (e.Node.Nodes.Count > 0)
+                {
+                    foreach (TreeNode c in e.Node.Nodes)
+                    {
+                        c.Checked = true;
+                    }
+                }
+            }
+            else
+            {
+                forDownloadLocal.Remove((string)e.Node.Tag);
+                foreach (TreeNode c in e.Node.Nodes)
+                {
+                    c.Checked = false;
+                }
+            }
+        }
+
+        //кнопка загрузки с сервера
+        private void button6_Click(object sender, EventArgs e)
+        {
+            if (tvFiles.SelectedNode == null || tvFiles.SelectedNode.ImageIndex == 1)
+            {
+                MessageBox.Show("Выберете локальное место хранения", "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            string LocalPath = (string)tvFiles.SelectedNode.Tag;
+            if (comboBox1.SelectedIndex == 0)
+            {
+                DownloadToLocal(forDownload, LocalPath, DOMAIN, USER, PASS);
+            }
+            else if(comboBox1.SelectedIndex == 1)
+            {
+                DownloadToLocal(forDownload2, LocalPath, DOMAIN2, USER2, USER2);
+            }
+            else if (comboBox1.SelectedIndex == 2)
+            {
+                DownloadToLocal(forDownload3, LocalPath, DOMAIN3, USER3, PASS3);
+            }
+        }
+
 
         //закрытие всех форм при закрытии основной формы
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             Program.CloseAllWindows();
+        }
+
+        //кнопка выгрузки на сервер
+        private void button7_Click(object sender, EventArgs e)
+        {
+            if (treeView1.SelectedNode == null || treeView1.SelectedNode.ImageIndex == 1)
+            {
+                MessageBox.Show("Выберете удалённое место хранения", "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            string ftpPath = (string)treeView1.SelectedNode.Tag;
+            if (comboBox1.SelectedIndex == 0)
+            {
+                UploadFilesTHR(DOMAIN, USER, PASS, forDownloadLocal, ftpPath);
+            }
+            else if (comboBox1.SelectedIndex == 1)
+            {
+                UploadFilesTHR(DOMAIN2, USER2, PASS2, forDownloadLocal, ftpPath);
+            }
+            else if (comboBox1.SelectedIndex == 2)
+            {
+                UploadFilesTHR(DOMAIN3, USER3, PASS3, forDownloadLocal, ftpPath);
+            }
+
         }
 
         //остановка процесса tread 
@@ -370,13 +460,45 @@ namespace Backup_service
             thread.Start();
         }
 
+        private void button9_Click(object sender, EventArgs e)
+        {
+            updateLocalTree();
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            DialogResult result = MessageBox.Show("Вы действительно хотите удалить локальные данные?", "Удаление", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (result == DialogResult.No)
+                return;
+            else
+            {
+                try
+                {
+                    foreach (string f in forDownloadLocal)
+                    {
+                        if (Directory.Exists(f))
+                            Directory.Delete(f, true);
+                        else if (File.Exists(f))
+                            File.Delete(f);
+                    }
+                    forDownloadLocal.Clear();
+                    updateLocalTree();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+           
+        }
+
         //открытие формы выгрузки на сервер 
         private void button5_Click(object sender, EventArgs e)
         {
             Form UpForm = new UploadForm(this);
             UpForm.Show();
         }
-        //
+
         //вызов окна настроек
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
@@ -718,6 +840,157 @@ namespace Backup_service
                 }
             }
 
+        }
+
+        //загрузка файлов и папок в локальное хранилище
+        private void DownloadToLocal(List<string> forDownload, string LocalDir,string domain, string user, string pass)
+        {
+            progressBar1.Maximum = forDownload.Count;
+            progressBar1.Value = 0;
+            //создаём поток
+            thread = (new System.Threading.Thread(delegate () {
+                if (forDownload.Count < 1) return;
+                //отключаем кнопки
+                button1.Invoke((MethodInvoker)(() => button1.Enabled = false));
+                button2.Invoke((MethodInvoker)(() => button2.Enabled = false));
+                button4.Invoke((MethodInvoker)(() => button4.Enabled = false));
+                button5.Invoke((MethodInvoker)(() => button5.Enabled = false));
+
+                Ftp_Client ftp = new Ftp_Client();
+                if (forDownload.Count > 0)
+                {
+                    ftp.Host = domain;
+                    ftp.UserName = user;
+                    ftp.Password = pass;
+                    foreach (string filepath in forDownload)
+                    {
+                        if (filepath.LastIndexOf('f') == filepath.Length - 1)
+                        {
+
+                            string filepath1 = filepath.Remove(filepath.LastIndexOf('f') - 1);
+                            string currentfilePath;
+                            if (forDownload.Contains(Path.GetDirectoryName(filepath1).Replace('\\', '/') + '/'))
+                                currentfilePath = LocalDir + filepath1.Replace('/', '\\');
+                            else
+                                currentfilePath = LocalDir + '\\' + Path.GetFileName(filepath1);
+                            int r = currentfilePath.LastIndexOf('\\', currentfilePath.Length - 2);
+                            currentfilePath = currentfilePath.Remove(r);
+
+                            try
+                            {
+                                progressBar1.Invoke((MethodInvoker)(() => progressBar1.Value++));
+                                UpdateInfoLabel(filepath1);
+
+                                ftp.DownloadFile(filepath1, currentfilePath);
+                            }
+                            catch (Exception ex)
+                            {
+                                if (ex.Message == "Поток находился в процессе прерывания.")
+                                {
+
+                                    MessageBox.Show("Процесс отменён пользователем", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    System.IO.File.Delete(currentfilePath + @"\" + filepath1.Substring(filepath1.LastIndexOf('/') + 1));
+                                    return;
+                                }
+
+                                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                continue;
+                            }
+                        }
+                        else
+                        {
+                            progressBar1.Invoke((MethodInvoker)(() => progressBar1.Value++));
+                            UpdateInfoLabel(filepath);
+                            if (!Directory.Exists(LocalDir + filepath.Replace('/', '\\')))
+                                Directory.CreateDirectory(LocalDir + filepath.Replace('/', '\\'));
+                        }
+                    }
+                    UpdateInfoLabel("");
+                }
+
+                progressBar1.Invoke((MethodInvoker)(() => progressBar1.Value = 0));
+                MessageBox.Show("Файлы скопированы", "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                button1.Invoke((MethodInvoker)(() => button1.Enabled = true));
+                button2.Invoke((MethodInvoker)(() => button2.Enabled = true));
+                button4.Invoke((MethodInvoker)(() => button4.Enabled = true));
+                button5.Invoke((MethodInvoker)(() => button5.Enabled = true));
+                updateLocalTree();
+            }));
+            thread.IsBackground = true;
+            thread.Start();
+        }
+
+        //рекурсивная выгрузка файлов и папок на сервер. для каждой папки вызывается эта функция
+        public void UploadFoldersRecursive(string domain, string user, string pass, List<string> filePaths, string rootFolder = "/", List<string> pathsINRoot = null)
+        {
+            Ftp_Client ftp = new Ftp_Client();
+            ftp.Host = domain;
+            ftp.UserName = user;
+            ftp.Password = pass;
+
+            List<string> pathsfolder;
+            foreach (string filePath in filePaths)
+            {
+                try
+                {
+                    if ((pathsINRoot == null || pathsINRoot.Contains(filePath)) && !downloadedToFTP.Contains(filePath))
+                    {
+                        if (Directory.Exists(filePath))
+                        {
+                            string[] fs = filePath.Split('\\');
+                            UpdateInfoLabel(System.IO.Path.GetFileName(filePath));
+                            ftp.CreateDirectory(rootFolder, fs[fs.Length - 1]);
+                            pathsfolder = new List<string>(Directory.GetFiles(filePath));
+                            pathsfolder.AddRange(new List<string>(Directory.GetDirectories(filePath)));
+                            downloadedToFTP.Add(filePath);
+                            progressBar1.Invoke((MethodInvoker)(() => progressBar1.Value += 1));
+                            UploadFoldersRecursive(domain, user, pass, filePaths, rootFolder + fs[fs.Length - 1] + '/', pathsfolder);
+                        }
+                        else
+                        {
+                            UpdateInfoLabel(System.IO.Path.GetFileName(filePath));
+                            ftp.UploadFile(rootFolder, filePath);
+                            downloadedToFTP.Add(filePath);
+                            progressBar1.Invoke((MethodInvoker)(() => progressBar1.Value += 1));
+                        }
+                        Task.Delay(100).GetAwaiter().GetResult();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    break;
+                }
+
+            }
+        }
+
+        //выгрузка файлов и папок на сервер
+        private void UploadFilesTHR(string domain, string user, string pass, List<string> filePaths, string FolderName = "/")
+        {
+            thread = (new System.Threading.Thread(delegate () {
+                //отключаем кнопки
+                button1.Invoke((MethodInvoker)(() => button1.Enabled = false));
+                button2.Invoke((MethodInvoker)(() => button2.Enabled = false));
+                button4.Invoke((MethodInvoker)(() => button4.Enabled = false));
+                button5.Invoke((MethodInvoker)(() => button5.Enabled = false));
+                progressBar1.Invoke((MethodInvoker)(() => progressBar1.Maximum = filePaths.Count));
+
+                UploadFoldersRecursive(domain, user, pass, filePaths, FolderName);
+                downloadedToFTP.Clear();
+
+                button1.Invoke((MethodInvoker)(() => button1.Enabled = true));
+                button2.Invoke((MethodInvoker)(() => button2.Enabled = true));
+                button4.Invoke((MethodInvoker)(() => button4.Enabled = true));
+                button5.Invoke((MethodInvoker)(() => button5.Enabled = true));
+                progressBar1.Invoke((MethodInvoker)(() => progressBar1.Value = 0));
+                UpdateInfoLabel("");
+                MessageBox.Show("Файлы скопированы", "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                updateList();
+
+            }));
+            thread.IsBackground = true;
+            thread.Start();
         }
     }
 }
