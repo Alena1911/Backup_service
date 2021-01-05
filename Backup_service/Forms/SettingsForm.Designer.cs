@@ -189,7 +189,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(126, 449);
+            this.button1.Location = new System.Drawing.Point(126, 356);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(80, 23);
             this.button1.TabIndex = 15;
@@ -213,6 +213,7 @@
             this.label9.Size = new System.Drawing.Size(266, 13);
             this.label9.TabIndex = 17;
             this.label9.Text = "Выбрать директорию для выгрузки файлов";
+            this.label9.Visible = false;
             // 
             // button2
             // 
@@ -278,12 +279,13 @@
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(291, 57);
             this.panel3.TabIndex = 21;
+            this.panel3.Visible = false;
             // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(324, 484);
+            this.ClientSize = new System.Drawing.Size(324, 388);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
